@@ -56,13 +56,13 @@ Flipable {
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
 
     id: container
-
     property alias source: frontImage.source
     property string character: ""
     property bool flipped: true
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0
+    state: "back"
 
     width: front.width; height: front.height
 
@@ -88,19 +88,17 @@ Flipable {
         height: 50
 }
 
-    state: "back"
-
-    MouseArea { anchors.fill: parent; onClicked: container.flipped = !container.flipped }
-
     transform: Rotation {
         id: rotation; origin.x: container.width / 2; origin.y: container.height / 2
         axis.x: container.xAxis; axis.y: container.yAxis; axis.z: 0
     }
 
-    states: State {
-        name: "back"; when: container.flipped
-        PropertyChanges { target: rotation; angle: container.angle }
-    }
+    states:
+        State {
+            name: "back"; when: container.flipped
+            PropertyChanges { target: rotation; angle: container.angle }
+       }
+
 
     transitions: Transition {
         ParallelAnimation {

@@ -57,7 +57,7 @@ Flipable {
     id: container
     property alias source: frontImage.source
     property string character: ""
-    property bool flipped: true
+    property bool flipped: false
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0
@@ -86,7 +86,7 @@ Flipable {
         height: 35
 }
 
-    state: "front"
+    state: "back"
 
     MouseArea { anchors.fill: parent; onClicked: container.flipped = !container.flipped }
 
@@ -96,7 +96,7 @@ Flipable {
     }
 
     states: State {
-        name: "front"; when: !container.flipped
+        name: "back"; when: container.flipped
         PropertyChanges { target: rotation; angle: container.angle }
     }
 

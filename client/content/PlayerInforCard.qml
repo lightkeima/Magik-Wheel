@@ -6,6 +6,10 @@ Rectangle{
     property string name: "<Undefine>"
     property int point: 100
     objectName: "id"
+    color: "#ecf4f3"
+    border.color: "#51adcf"
+    border.width: 2
+    radius: 10
     Row {
         id: row
         FontLoader {
@@ -16,15 +20,15 @@ Rectangle{
             return parseInt(Math.random() * 30 + 1);
         }
         function getRandomAvatar() {
-            return "../game resources/graphics/kenney_animalpackredux/PNG/Round (outline)/avatar (" + randomNumber() + ").png";
+            return "../game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (" + randomNumber() + ").png";
         }
         spacing: 10
         //anchors.fill: parent
 
         Image{
            source: row.getRandomAvatar()
-           width: 40
-           height: (40/sourceSize.width) * sourceSize.height
+           width: 45
+           height: 45
 
         }
         Column{

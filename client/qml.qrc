@@ -712,36 +712,6 @@
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details/walrus.png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details/whale.png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details/zebra.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/bear.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/buffalo.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/chick.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/chicken.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/cow.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/crocodile.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/dog.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/duck.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/elephant.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/frog.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/giraffe.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/goat.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/gorilla.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/hippo.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/horse.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/monkey.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/moose.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/narwhal.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/owl.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/panda.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/parrot.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/penguin.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/pig.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/rabbit.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/rhino.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/sloth.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/snake.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/walrus.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/whale.png</file>
-        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/zebra.png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Square/bear.png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Square/buffalo.png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Square/chick.png</file>
@@ -899,5 +869,35 @@
         <file>game resources/graphics/kenney_animalpackredux/Patreon.url</file>
         <file>game resources/graphics/kenney_animalpackredux/Preview.png</file>
         <file>content/PlayerList.qml</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (1).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (10).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (11).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (12).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (13).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (14).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (15).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (16).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (17).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (18).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (19).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (2).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (20).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (21).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (22).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (23).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (24).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (25).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (26).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (27).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (28).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (29).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (3).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (30).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (4).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (5).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (6).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (7).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (8).png</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (9).png</file>
     </qresource>
 </RCC>

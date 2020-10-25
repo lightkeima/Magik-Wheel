@@ -9,9 +9,8 @@ Window {
     height: 600
     visible: true
     title: qsTr("Chiếc nón mlem")
-
     Column{
-        id: mainColumn
+        objectName: "mainColumn"
         anchors.fill: parent
         spacing: 5
         MessagePanel{}

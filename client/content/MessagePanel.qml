@@ -6,9 +6,10 @@ Rectangle {
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
 
     id: guessPanel
+    objectName: "messagePanel"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.topMargin: 10
-    property string hint: "is a mostly derogatory slang term for a Western person who is obsessed with Japanese culture, especially anime, often regarding it as superior to all other cultures."
+    property string hint: "hint"
     width: 770
     height: 130
     color: "#ecf4f3"
