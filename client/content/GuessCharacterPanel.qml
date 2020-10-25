@@ -7,8 +7,8 @@ Rectangle {
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
 
     id: guessPanel
-    width: 260
-    height: 220
+    width: 535
+    height: 95
     color: "#ecf4f3"
     border.color: "#51adcf"
     border.width: 3
@@ -18,7 +18,7 @@ Rectangle {
         anchors.leftMargin: 10
         anchors.top: guessPanel.top
         anchors.topMargin: 10
-        columns: 6
+        columns: 13
         spacing: 5
         Repeater {
             id: digits

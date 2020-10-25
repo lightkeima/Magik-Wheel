@@ -1,13 +1,15 @@
-import QtQuick 2.0
+import QtQuick 2.5
+
 Rectangle{
     id: container
-    width:180
-    height: 45
+    width: turn ? 200 : 180
+    height: turn? 55 : 45
     property string name: "<Undefine>"
+    property bool turn: false
     property int point: 100
     objectName: "id"
-    color: "#ecf4f3"
-    border.color: "#51adcf"
+    color: turn ? "#eeeeee":  "#eeeeee"
+    border.color: turn? "#0278ae" : "#a5ecd7"
     border.width: 2
     radius: 10
     Row {
@@ -27,8 +29,8 @@ Rectangle{
 
         Image{
            source: row.getRandomAvatar()
-           width: 45
-           height: 45
+           width: container.turn ? 55: 45
+           height: container.turn ? 55: 45
 
         }
         Column{

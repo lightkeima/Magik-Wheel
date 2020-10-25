@@ -258,13 +258,4 @@ Grid {
         objectName: "char29"
         visible: false
     }
-    CharacterCard{
-        source: "../game resources/graphics/uipack_fixed/PNG/green_button06.png"
-        angle: 180
-        yAxis: 1
-        character: ""
-        objectName: "char30"
-        visible: false
-    }
-
 }

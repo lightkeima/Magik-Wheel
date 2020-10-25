@@ -20,6 +20,11 @@ public:
     void ShowResultAtPosition(unsigned int position);
 
     void ShowHint(std::string hint);
+
+    void CreatePlayerList(unsigned int number_of_player);
+    void ChangePlayerName(unsigned int player_index, std::string name);
+    void UpdatePlayerScore(unsigned int player_index, unsigned int point);
+    void MarkPlayer(unsigned int player_index);
 };
 
 #endif // CLIENT_GUICONTROLLER_H

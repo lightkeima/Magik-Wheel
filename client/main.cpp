@@ -14,6 +14,10 @@ int main(int argc, char *argv[])
             url);
     QObject *object = component.create();
     Client_GUIController guiController(object);
+    guiController.CreatePlayerList(9);
+    guiController.MarkPlayer(1);
+    guiController.MarkPlayer(3);
+
     return app.exec();
 
 }
