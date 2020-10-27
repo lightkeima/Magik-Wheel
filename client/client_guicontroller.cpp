@@ -5,10 +5,6 @@ Client_GUIController::Client_GUIController(QObject* root)
     this->root = root;
 }
 
-/*
-Client_GUIController
-This function take a word and display it on the Word Display Panel
-*/
 void Client_GUIController::SetWord(std::string word){
     for(unsigned int i = 0; i < 30;++i){
         std::string id = "char";

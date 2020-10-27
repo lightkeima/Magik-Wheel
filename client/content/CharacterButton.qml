@@ -61,7 +61,7 @@ Flipable {
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0
-
+    objectName: "guess " + character
     width: front.width; height: front.height
 
     front: Image { id: frontImage
@@ -109,4 +109,9 @@ Flipable {
             }
         }
     }
+
+    function getChar() : string {
+            console.log("Character:", container.character)
+            return container.character
+        }
 }

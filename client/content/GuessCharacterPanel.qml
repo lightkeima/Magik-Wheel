@@ -20,15 +20,161 @@ Rectangle {
         anchors.topMargin: 10
         columns: 13
         spacing: 5
-        Repeater {
-            id: digits
-            model: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-            CharacterButton{
-                source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
-                angle: 180
-                yAxis: 1
-                character: modelData
-           }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "a"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "b"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "c"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "d"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "e"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "f"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "g"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "h"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "i"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "j"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "k"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "l"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "m"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "n"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "o"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "p"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "q"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "r"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "s"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "t"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "u"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "v"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "w"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "x"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "y"
+        }
+        CharacterButton{
+            source: "../game resources/graphics/uipack_fixed/PNG/blue_button06.png"
+            angle: 180
+            yAxis: 1
+            character: "z"
         }
     }
 

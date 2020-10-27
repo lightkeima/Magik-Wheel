@@ -12,7 +12,6 @@ class Client_GUIController
 {
 private:
     QObject* root;
-    std::vector<QObject*> playerList;
 public:
     Client_GUIController(QObject* root);
     //Word Display Controll
