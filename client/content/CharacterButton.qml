@@ -49,8 +49,9 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-
+import client.guessbutton 1.0
 Flipable {
+
     FontLoader {
         id: kenneyFutureNarrow;
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
@@ -63,7 +64,6 @@ Flipable {
     property int angle: 0
     objectName: "guess " + character
     width: front.width; height: front.height
-
     front: Image { id: frontImage
         width: 35; height: 35
         Text {
@@ -79,16 +79,19 @@ Flipable {
             color: "#1b1c1d"
             font.family: kenneyFutureNarrow.name
         }
- }
+    }
+    GuessButton{
+        id: guessButton
+    }
     back: Image {
         source: "../game resources/graphics/uipack_fixed/PNG/blue_button09.png"
         width: 35
         height: 35
 }
 
-    state: "back"
+    state: "front"
 
-    MouseArea { anchors.fill: parent; onClicked: container.flipped = !container.flipped }
+    MouseArea { anchors.fill: parent; onClicked: guessButton.onButtonClick() }
 
     transform: Rotation {
         id: rotation; origin.x: container.width / 2; origin.y: container.height / 2
@@ -96,7 +99,7 @@ Flipable {
     }
 
     states: State {
-        name: "back"; when: container.flipped
+        name: "front"; when: container.flipped
         PropertyChanges { target: rotation; angle: container.angle }
     }
 
