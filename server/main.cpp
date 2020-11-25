@@ -3,26 +3,126 @@
 #include <QQmlComponent>
 #include <QQuickView>
 #include <guicontroller.h>
+#include "database.h"
+#include <nlohmann/json.hpp>
+#include <bits/stdc++.h>
+#include "gamecontroller.h"
+
+using namespace std;
+
+using json = nlohmann::json;
+
+
+void GameLogicTest() {
+
+    // 0-index player
+    vector<int> playerOrder{0, 2, 1, 3};
+
+    auto database = Database("/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt");
+
+    // Number of player
+    int N = 4;
+
+    auto gameController = GameController(N, database);
+
+    // Test get masked kw
+    auto maskedKw = gameController.getMaskedKeyword();
+    cout << "Masked KW: " << maskedKw << endl;
+
+    // Test get hint
+    auto hint  = gameController.getHint();
+    cout << "Hint: " << hint << endl;
+
+    // Test player guess keyword from the first turn
+
+    int idx = 0;
+
+    int currentPlayer = playerOrder[idx];
+
+    int status = gameController.processPlayerAnswer(currentPlayer, "Test keyword");
+
+    cout << "Trying to guess keyword at the begining! Return status (should = -1) = " << status << endl;
+
+    // Trying guess characters
+    status = gameController.processPlayerAnswer(currentPlayer, 'k');
+
+    cout << "Correct character guess. Status (should = 1) = " << status << endl;
+    cout << "There are " << gameController.getCorrectCharGuessPosition().size() << "occurrence" << endl;
+
+    cout << "Score for all players" << endl;
+    auto scores = gameController.getPlayerScore();
+
+    for (int i = 0; i < N; i++) {
+        cout << "Player " << i << ": " << scores[i] << endl;
+    }
+
+    // Next player
+    idx++;
+
+    currentPlayer = playerOrder[idx];
+
+    // Try to guess keyword and fail
+
+    status = gameController.processPlayerAnswer(currentPlayer, "Test keyword");
+
+    cout << "Trying to guess keyword and fail! Return status (should = 0) = " << status << endl;
+    cout << "This player is " << (gameController.isDisqualifiedPlayer(currentPlayer) ? "disqualified" : "not disqualifed") << endl;
+
+    // Guess correct keyword
+    idx++;
+
+    currentPlayer = playerOrder[idx];
+
+    status = gameController.processPlayerAnswer(currentPlayer, gameController.getKeyword());
+    cout << "Trying to guess keyword and succeed! Return status (should = 1) = " << status << endl;
+
+    cout << "Score for all players" << endl;
+    scores = gameController.getPlayerScore();
+    for (int i = 0; i < N; i++) {
+        cout << "Player " << i << ": " << scores[i] << endl;
+    }
+
+    cout << "The game is " << (gameController.isEndGame() ? "finisehd" : "not finished") << endl;
+
+    // Restart the game
+    gameController.restart();
+
+    cout << "New keyword and hint" << endl;
+    cout << gameController.getMaskedKeyword() << endl;
+    cout << gameController.getHint() << endl;
+
+    // Check game is not end
+    cout << "The game is " << (gameController.isEndGame() ? "finisehd" : "not finished") << endl;
+
+    cout << "Scores after restart" << endl;
+    scores = gameController.getPlayerScore();
+    for (int i = 0; i < N; i++) {
+        cout << "Player " << i << ": " << scores[i] << endl;
+    }
+}
+
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    GameLogicTest();
 
-    QGuiApplication app(argc, argv);
-    QQmlEngine xengine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
-    QQmlComponent component(&xengine,
-            url);
-    QObject *object = component.create();
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    GUIController guiController(object);
-    guiController.ShowHint("Love anime");
-    guiController.SetWord("Weeboo");
-    guiController.ShowResultAtPosition(0);
-    guiController.ShowResultAtPosition(1);
-    guiController.ShowResultAtPosition(2);
-    guiController.ShowResultAtPosition(3);
-    guiController.ShowResultAtPosition(4);
-    guiController.FlipCharacter('a');
-    guiController.FlipCharacter('f');
-    return app.exec();
+//    QGuiApplication app(argc, argv);
+//    QQmlEngine xengine;
+//    const QUrl url(QStringLiteral("qrc:/main.qml"));
+//    QQmlComponent component(&xengine,
+//            url);
+//    QObject *object = component.create();
+
+//    GUIController guiController(object);
+//    guiController.ShowHint("Love anime");
+//    guiController.SetWord("Weeboo");
+//    guiController.ShowResultAtPosition(0);
+//    guiController.ShowResultAtPosition(1);
+//    guiController.ShowResultAtPosition(2);
+//    guiController.ShowResultAtPosition(3);
+//    guiController.ShowResultAtPosition(4);
+//    guiController.FlipCharacter('a');
+//    guiController.FlipCharacter('f');
+//    return app.exec();
 }

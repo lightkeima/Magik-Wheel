@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
         database.cpp \
+        gamecontroller.cpp \
         guicontroller.cpp \
         main.cpp
 
@@ -28,6 +29,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     database.h \
+    gamecontroller.h \
     guicontroller.h \
     nlohmann/json.hpp
 
