@@ -13,7 +13,7 @@ class Database
 private:
     vector<pair<string, string>> keywords;
 public:
-    Database() = delete;
+    Database();
 
     Database(string fpath);
 
