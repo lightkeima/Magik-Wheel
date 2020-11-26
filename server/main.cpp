@@ -7,10 +7,15 @@
 #include <nlohmann/json.hpp>
 #include <bits/stdc++.h>
 #include "gamecontroller.h"
+#include <chrono>
+#include <thread>
+
 
 using namespace std;
 
 using json = nlohmann::json;
+using namespace std::this_thread; // sleep_for, sleep_until
+using namespace std::chrono; // nanoseconds, system_clock, seconds
 
 
 void GameLogicTest() {
@@ -19,7 +24,6 @@ void GameLogicTest() {
     vector<int> playerOrder{0, 2, 1, 3};
 
     auto database = Database("/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt");
-
     // Number of player
     int N = 4;
 
@@ -44,10 +48,13 @@ void GameLogicTest() {
     cout << "Trying to guess keyword at the begining! Return status (should = -1) = " << status << endl;
 
     // Trying guess characters
-    status = gameController.processPlayerAnswer(currentPlayer, 'k');
+    status = gameController.processPlayerAnswer(currentPlayer, gameController.getKeyword()[0]);
 
     cout << "Correct character guess. Status (should = 1) = " << status << endl;
-    cout << "There are " << gameController.getCorrectCharGuessPosition().size() << "occurrence" << endl;
+    cout << "There are " << gameController.getCorrectCharGuessPosition().size() << " occurrence" << endl;
+
+    maskedKw = gameController.getMaskedKeyword();
+    cout << "Masked KW: " << maskedKw << endl;
 
     cout << "Score for all players" << endl;
     auto scores = gameController.getPlayerScore();
@@ -75,6 +82,7 @@ void GameLogicTest() {
 
     status = gameController.processPlayerAnswer(currentPlayer, gameController.getKeyword());
     cout << "Trying to guess keyword and succeed! Return status (should = 1) = " << status << endl;
+    cout << "The keyword is " << gameController.getKeyword() << endl;
 
     cout << "Score for all players" << endl;
     scores = gameController.getPlayerScore();
@@ -85,6 +93,7 @@ void GameLogicTest() {
     cout << "The game is " << (gameController.isEndGame() ? "finisehd" : "not finished") << endl;
 
     // Restart the game
+    sleep_until(system_clock::now() + seconds(1));
     gameController.restart();
 
     cout << "New keyword and hint" << endl;
