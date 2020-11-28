@@ -23,18 +23,18 @@ void GameLogicTest() {
     // 0-index player
     vector<int> playerOrder{0, 2, 1, 3};
 
-    auto database = Database("/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt");
+    Database database = Database("/home/lightkeima/Courses/cs493/Magik-Wheel/server/database/database.txt");
     // Number of player
     int N = 4;
 
-    auto gameController = GameController(N, database);
+    GameController gameController = GameController(N, database);
 
     // Test get masked kw
-    auto maskedKw = gameController.getMaskedKeyword();
+    string maskedKw = gameController.getMaskedKeyword();
     cout << "Masked KW: " << maskedKw << endl;
 
     // Test get hint
-    auto hint  = gameController.getHint();
+    string hint  = gameController.getHint();
     cout << "Hint: " << hint << endl;
 
     // Test player guess keyword from the first turn
@@ -57,7 +57,7 @@ void GameLogicTest() {
     cout << "Masked KW: " << maskedKw << endl;
 
     cout << "Score for all players" << endl;
-    auto scores = gameController.getPlayerScore();
+    vector<int> scores = gameController.getPlayerScore();
 
     for (int i = 0; i < N; i++) {
         cout << "Player " << i << ": " << scores[i] << endl;
@@ -112,26 +112,28 @@ void GameLogicTest() {
 
 int main(int argc, char *argv[])
 {
+
     GameLogicTest();
+    /*
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication app(argc, argv);
+    QQmlEngine xengine;
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    QQmlComponent component(&xengine,
+            url);
+    QObject *object = component.create();
 
-//    QGuiApplication app(argc, argv);
-//    QQmlEngine xengine;
-//    const QUrl url(QStringLiteral("qrc:/main.qml"));
-//    QQmlComponent component(&xengine,
-//            url);
-//    QObject *object = component.create();
-
-//    GUIController guiController(object);
-//    guiController.ShowHint("Love anime");
-//    guiController.SetWord("Weeboo");
-//    guiController.ShowResultAtPosition(0);
-//    guiController.ShowResultAtPosition(1);
-//    guiController.ShowResultAtPosition(2);
-//    guiController.ShowResultAtPosition(3);
-//    guiController.ShowResultAtPosition(4);
-//    guiController.FlipCharacter('a');
-//    guiController.FlipCharacter('f');
-//    return app.exec();
+    GUIController guiController(object);
+    guiController.ShowHint("Love anime");
+    guiController.SetWord("Weeboo");
+    guiController.ShowResultAtPosition(0);
+    guiController.ShowResultAtPosition(1);
+    guiController.ShowResultAtPosition(2);
+    guiController.ShowResultAtPosition(3);
+    guiController.ShowResultAtPosition(4);
+    guiController.FlipCharacter('a');
+    guiController.FlipCharacter('f');
+    return app.exec();
+    */
 }
