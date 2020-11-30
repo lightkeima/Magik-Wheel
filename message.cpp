@@ -1,16 +1,12 @@
 #include "message.h"
 
 
-Message::Message(string header) {
-    this->header = header;
-}
-
 Message::Message(string header, vector<string> data) {
     this->header = header;
     this->data = data;
 }
 
-Message::Message(char* buffer) {
+Message::Message(string buffer) {
     string __tmp(buffer);
     stringstream ss(__tmp);
     string token;
@@ -22,10 +18,10 @@ Message::Message(char* buffer) {
     }
 }
 
-const char* Message::c_str() {
+string Message::str() {
     stringstream ss;
     ss << header;
     for (string token: data)
         ss << " " << token;
-    return ss.str().c_str();
+    return ss.str();
 }

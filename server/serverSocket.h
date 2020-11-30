@@ -11,7 +11,7 @@
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 
-#include "message.h"
+#include "../message.h"
 // #include "gamecontroller.h"
 
 using namespace std;

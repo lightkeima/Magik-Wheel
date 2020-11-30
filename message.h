@@ -20,13 +20,11 @@ struct Message {
     string header;
     vector<string> data;
 
-    Message(string header);
-
     Message(string header, vector<string> data);
 
-    Message(char* buffer);
+    Message(string buffer);
 
-    const char* c_str();
+    string str();
 };
 
 #endif // MESSAGE_H

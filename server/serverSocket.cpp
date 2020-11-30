@@ -36,7 +36,7 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
 }
 
 Message ServerSocket::clientConnectedHandler(int clientIdx) {
-
+	return Message(HEADER_UNAME_REQUEST);
 }
 
 void ServerSocket::clientDisconnectedHandler(int clientIdx) {
@@ -83,7 +83,7 @@ bool ServerSocket::initSocket() {
 }
 
 void ServerSocket::mainLoop() {
-	printf("Waiting for players...");
+	puts("Waiting for players...");
 
 	clientSocket.assign(maxClient, 0);
 	
@@ -110,7 +110,7 @@ void ServerSocket::mainLoop() {
 		int activity = select(maxSd + 1, &readfds, NULL, NULL, NULL);
 
 		// If something happened on the master socket, then it's an incoming connection 
-		if (FD_ISSET(serverSocket, &readfds)) { 
+		if (FD_ISSET(serverSocket, &readfds)) {
 			sockaddr_in address;	
 			int addrlen, newSocket;
 			if ((newSocket = accept(serverSocket, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
@@ -127,7 +127,8 @@ void ServerSocket::mainLoop() {
 					clientSocket[i] = newSocket;
 					printf("Adding to list of sockets as %d\n" , i);
 					// send first message
-					const char* message = clientConnectedHandler(i).c_str();
+					string __message = clientConnectedHandler(i).str();
+					const char* message = __message.c_str();
 					if (send(newSocket, message, strlen(message), 0) != strlen(message)) { 
 						puts("Failed to send message to client");
 					}
@@ -138,7 +139,8 @@ void ServerSocket::mainLoop() {
 			// No position is available, reject and close the connection
 			if (!emptySlotFound) {
 				puts("Server is full");
-				const char* message = Message(HEADER_SERVER_FULL).c_str();
+				string __message = Message(HEADER_SERVER_FULL).str();
+				const char* message = __message.c_str();
 				send(newSocket, message, strlen(message), 0);   
 				close(newSocket);
 			}
@@ -169,7 +171,8 @@ void ServerSocket::mainLoop() {
 				else {   
 					// Set the string terminating NULL byte on the end of the data read  
 					clientMessage[valread] = 0;
-					const char* serverMessage = clientResponseHandler(i, clientMessage).c_str();
+					string __serverMessage = clientResponseHandler(i, string(clientMessage)).str();
+					const char* serverMessage = __serverMessage.c_str();
 					send(sd, serverMessage, strlen(serverMessage), 0);   
 				}
 			}
