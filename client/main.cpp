@@ -1,9 +1,9 @@
-// #include <QGuiApplication>
-// #include <QQmlApplicationEngine>
-// #include <QQmlComponent>
-// #include <QQuickView>
-// #include <guicontroller.h>
-// #include "guessbutton.h"
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlComponent>
+#include <QQuickView>
+#include <guicontroller.h>
+#include "guessbutton.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
