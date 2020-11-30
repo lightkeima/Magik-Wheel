@@ -32,12 +32,10 @@ private:
     void checkGuessChar(char c);
     bool validPlayerIdx(int idx);
 
-
+    
 
 
 public:
-
-    GameController() = delete;
 
     GameController(int N, Database database);
 
