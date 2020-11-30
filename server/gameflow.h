@@ -1,14 +1,6 @@
 #ifndef GAMEFLOW_H
 #define GAMEFLOW_H
 
-#define HEADER_UNAME_REQUEST    "USERNAME_REQUEST"
-#define HEADER_UNAME_RESPONSE   "USERNAME_RESPONSE"
-#define HEADER_UNAME_INVALID    "USERNAME_INVALID"
-#define HEADER_UNAME_DUPLICATED "USERNAME_DUPLICATED"
-#define HEADER_REGISTER_SUCCESS "REGISTER_SUCCESS"
-#define HEADER_BAD_MESSAGE      "BAD_MESSAGE"
-#define HEADER_SERVER_FULL      "SERVER_FULL"
-
 #include <bits/stdc++.h>
 #include <stdlib.h> 
 #include <errno.h> 
@@ -53,18 +45,7 @@ public:
   int getNextPlayerIndex();
 };
 
-struct Message {
-	string header;
-	vector<string> data;
 
-	Message(string header);
-
-	Message(string header, vector<string> data);
-
-	Message(char* buffer);
-
-	const char* c_str();
-};
 
 class GameFlow {
 private:

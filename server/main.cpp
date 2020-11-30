@@ -23,8 +23,8 @@ void GameLogicTest() {
     // 0-index player
     vector<int> playerOrder{0, 2, 1, 3};
 
-    // auto database = Database("/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt");
-    auto database = Database("/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt");
+     auto database = Database("/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt");
+//    auto database = Database("/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt");
     // Number of player
     int N = 4;
 

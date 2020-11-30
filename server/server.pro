@@ -11,8 +11,11 @@ CONFIG += c++11
 SOURCES += \
         database.cpp \
         gamecontroller.cpp \
+        gameflow.cpp \
         guicontroller.cpp \
-        main.cpp
+        main.cpp \
+        message.cpp \
+        serverSocket.cpp
 
 RESOURCES += qml.qrc
 
@@ -30,8 +33,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     database.h \
     gamecontroller.h \
+    gameflow.h \
     guicontroller.h \
-    nlohmann/json.hpp
+    message.h \
+    nlohmann/json.hpp \
+    serverSocket.h
 
 DISTFILES += \
     database/database.json \
