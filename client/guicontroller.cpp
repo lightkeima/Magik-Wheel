@@ -116,3 +116,11 @@ void GUIController::FlipCharacter(char character){
     }
 }
 
+std::string GUIController::GetStringFromTextField(QString objectname){
+    std::string result = "";
+    QObject* textField = root->findChild<QObject*>(objectname);
+    if(textField){
+        result = textField->property("text").toString().toUtf8().constData();
+    }
+    return result;
+}

@@ -25,6 +25,9 @@ public:
     void UpdatePlayerScore(unsigned int player_index, unsigned int point);
     void MarkPlayer(unsigned int player_index);
     void FlipCharacter(char character);
+
+    std::string GetStringFromTextField(QString objectname);
+
 };
 
 #endif // CLIENT_GUICONTROLLER_H

@@ -54,6 +54,7 @@ import client.guessbutton 1.0
 import QtQuick.Layouts 1.15
 import QtGraphicalEffects 1.12
 Button {
+    anchors.horizontalCenter: parent.horizontalCenter
 
     FontLoader {
         id: kenneyFutureNarrow;
@@ -94,36 +95,110 @@ Button {
         font.family: kenneyFutureNarrow.name
     }
     onClicked: guessdialog.open()
-    Dialog {
-        id: guessdialog
-        ColumnLayout{
-            spacing: 5
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "Guess the keyword"
-                fontSizeMode: Text.FixedHeight
-                anchors.leftMargin: 5;
-                anchors.fill: parent
-                font.pixelSize: 25
-                color: "#1b1c1d"
-                font.family: kenneyFutureNarrow.name
+    Item{
+        Dialog {
+            id: guessdialog
+            ColumnLayout{
+                spacing: 5
+                Text {
+                    text: "Guess the keyword"
+                    fontSizeMode: Text.FixedHeight
+                    //anchors.leftMargin: 5;
+                    //anchors.fill: parent
+                    font.pixelSize: 25
+                    color: "#1b1c1d"
+                    font.family: kenneyFutureNarrow.name
+                }
+                TextField {
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Enter something")
+                    maximumLength: 30
+                    font.family: kenneyFutureNarrow.name
+                    font.pixelSize: 20
+                }
+
+                Row{
+                    Button{
+                        id: btnaccept
+                        background: Rectangle {
+                                id: bg1
+                                implicitWidth: 150
+                                implicitHeight: 37
+                                color: "#ecf4f3"
+                                border.color: "#00b30c"
+                                border.width: 3
+                                radius: 4
+                            }
+                        DropShadow {
+                           anchors.fill: bg1
+                           horizontalOffset: 3
+                           verticalOffset: 3
+                           radius: 10.0
+                           samples: 17
+                           color: btnaccept.down ? "#7fff3b" : "#80000000";
+                           source: bg1
+                        }
+                        Text {
+                            id: text1
+                            text: "Accept"
+                            fontSizeMode: Text.FixedHeight
+                            anchors.leftMargin: 5;
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            minimumPixelSize: 10
+                            color: "#1b1c1d"
+                            font.family: kenneyFutureNarrow.name
+                        }
+                    }
+                    Button{
+                        id: btnext
+                        background: Rectangle {
+                                id: bg2
+                                implicitWidth: 150
+                                implicitHeight: 37
+                                color: "#ecf4f3"
+                                border.color: "#fc3d03"
+                                border.width: 3
+                                radius: 4
+                            }
+                        DropShadow {
+                            anchors.fill: bg2
+                            horizontalOffset: 3
+                            verticalOffset: 3
+                            radius: 10.0
+                            samples: 17
+                            color: btnext.down ? "#ff3c2e" : "#80000000";
+                            source: bg2
+                        }
+
+                        Text {
+                            id: text2
+                            text: "Exit"
+                            fontSizeMode: Text.FixedHeight
+                            anchors.leftMargin: 5;
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            minimumPixelSize: 10
+                            color: "#1b1c1d"
+                            font.family: kenneyFutureNarrow.name
+                            }
+                        }
+                  }
             }
-            TextField {
-                Layout.fillWidth: true
-                placeholderText: qsTr("Enter something")
-                maximumLength: 30
-                font.family: kenneyFutureNarrow.name
-                font.pixelSize: 20
+            onAccepted: console.log("Ok clicked")
+            onRejected: console.log("Cancel clicked")
+            background: Rectangle {
+                color: "#facaca"
+                border.color: "#eb3434"
+                border.width: 3
+                radius: 10
             }
-        }
-        onAccepted: console.log("Ok clicked")
-        onRejected: console.log("Cancel clicked")
-        background: Rectangle {
-            color: "#facaca"
-            border.color: "#eb3434"
-            border.width: 3
-            radius: 10
-        }
+
+    }
 
     }
 

@@ -2,5 +2,5 @@
 
 void GuessButton::onButtonClick()
 {
-
+    qDebug()<<"lmao";
 }
