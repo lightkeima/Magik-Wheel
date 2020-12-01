@@ -23,12 +23,16 @@ private:
   // client socket descriptor
   int clientSocket;
 
+  string username;
+
   // send message to server
   bool sendMessageToServer(Message message);
 
   Message serverResponseHandler(Message message);
 
   void serverDisconnectedHandler();
+
+  int turnCount;
 
 public:
   ClientSocket();

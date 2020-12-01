@@ -25,54 +25,58 @@ using namespace std;
 
 class ServerSocket {
 private:
-  // server socket descriptor
-  int serverSocket;
+    // path of the keyword database
+    string dbPath;
 
-  // maximum number of client
-  int maxClient;
+    // server socket descriptor
+    int serverSocket;
 
-  // current number of client
-  int nClient;
+    // list of client socket descriptor
+    vector<int> clientSocket;
 
-  // path of the keyword database
-  string dbPath;
+    // maximum number of client
+    int maxClient;
 
-  // current state of the game
-  GameState gameState;
+    // current number of client
+    int nClient;
 
-  // list of client socket descriptor
-  vector<int> clientSocket;
+    // current state of the game
+    GameState gameState;
 
-  PlayerManager playerManager;
+    int currentPlayerIdx;
 
-  GameController gameController;
+    int turnState;
 
-  // setup before starting the game
-  void startGame();
+    PlayerManager playerManager;
 
-  // send message to a client
-  bool sendMessageToClient(int clientSocket, Message message);
+    GameController gameController;
 
-  // handle when a new client connect to the server
-  Message clientConnectedHandler(int clientIdx);
+    // setup before starting the game
+    void startGame();
 
-  // handle when a new reponse is received from the server
-  Message clientResponseHandler(int clientIdx, Message message);
-  
-  // handle when a client disconnected from the server
-  void clientDisconnectedHandler(int clientIdx);
+    // send message to a client
+    bool sendMessageToClient(int clientSocket, Message message);
 
-  // handle game logic
-  void handleGameLogic();
-  
+    // handle when a new client connect to the server
+    Message clientConnectedHandler(int clientIdx);
+
+    // handle when a new reponse is received from the server
+    Message clientResponseHandler(int clientIdx, Message message);
+
+    // handle when a client disconnected from the server
+    void clientDisconnectedHandler(int clientIdx);
+
+    // handle game logic
+    void handleGameLogic();
+
 public:
-  ServerSocket(int maxClient, string dbPath);
+    ServerSocket(int maxClient, string dbPath);
 
-  // set up the server socket
-  bool initSocket();
+    // set up the server socket
+    bool initSocket();
 
-  // executing main loop of the socket
-  void mainLoop();
+    // executing main loop of the socket
+    void mainLoop();
 };
 
 #endif // SERVERSOCKET_H

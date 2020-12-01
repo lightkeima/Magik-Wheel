@@ -35,22 +35,74 @@ Message ClientSocket::serverResponseHandler(Message message) {
             puts("Connected to server");
         }
 
-        string username;
         cout << "Enter your username (not exceeding 10 characters, consist of letters, numbers and '_'): ";
         cin >> username;
 
         header = HEADER_UNAME_RESPONSE;
         data = {username};
     }
+    else if (message.header == HEADER_GAME_ALREADY_STARTED) {
+        puts("Game has already started. Please wait for another game.");
+    }
     else if (message.header == HEADER_REGISTER_SUCCESS) {
         puts("Registered success! Waiting for the game to start...");
     }
     else if (message.header == HEADER_GAME_START) {
+        int keywordLength = stoi(message.data[0]);
+        string hint = message.data[1];
+        string maskedKeyword = message.data[2];
+
         puts("Game started!");
-        printf("Keyword length: %s\n", );
+        printf("Keyword length: %d\n", keywordLength);
+        printf("Masked keyword: %s\n", maskedKeyword.c_str());
+        printf("Hint: %s\n", hint.c_str());
     }
-    else if (message.header == HEADER_GAME_ALREADY_STARTED) {
-        puts("Game has already started. Please wait for another game.");
+    else if (message.header == HEADER_GUESS_CHAR_REQUEST) {
+        cout << "Enter the character: ";
+        char guessChar;
+        cin >> guessChar;
+
+        header = HEADER_GUESS_CHAR_RESPONSE;
+        data = {to_string(guessChar)};
+    }
+    else if (message.header == HEADER_GUESS_CHAR_RESULT) {
+        int result = stoi(message.data[0]);
+        if (result == 0) {
+            printf("Correct! You get another turn.\n");
+        }
+        else {
+            printf("Incorrect! Next player's turn.\n");
+        }
+
+//        int score = stoi(message.data[1]);
+//        printf("New score: %d\n", score);
+    }
+    else if (message.header == HEADER_GUESS_KEYWORD_REQUEST) {
+        string keyword;
+        cout << "Enter the keyword (blank keyword for no guess): ";
+        cin >> keyword;
+
+        header = HEADER_GUESS_KEYWORD_RESPONSE;
+        data = {keyword};
+    }
+    else if (message.header == HEADER_GUESS_KEYWORD_RESULT) {
+        int result = stoi(message.data[0]);
+        if (result == 0) {
+            printf("Congratulation! Your keyword is correct!\n");
+        }
+        else {
+            printf("Your keyword is incorrect! Better luck next time...\n");
+        }
+
+//        int score = stoi(message.data[1]);
+//        printf("New score: %d\n", score);
+    }
+    else if (message.header == HEADER_UPDATE_GAME_INFO) {
+//        string player = message.data[0];
+//        string maskedKeyword = message.data[1];
+
+//        printf("%s's turn", player.c_str());
+//        printf("Keyword: %s\n", maskedKeyword.c_str());
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
         puts("Something wrong I can feel it...");

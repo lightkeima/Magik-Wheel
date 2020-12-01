@@ -5,6 +5,7 @@ ServerSocket::ServerSocket(int maxClient, string dbPath) {
 	this->dbPath = dbPath;
     this->playerManager = PlayerManager(maxClient);
     this->gameState = NOT_STARTED;
+    this->turnState = 0;
 }
 
 void ServerSocket::startGame() {
@@ -22,14 +23,15 @@ void ServerSocket::startGame() {
     for(int i = 0; i < nClient; ++i) {
         int keywordLength = gameController.getKeyword().length();
         string hint = gameController.getHint();
-        vector<string> data = {to_string(keywordLength), hint};
+        string maskedKeyword = gameController.getMaskedKeyword();
+        vector<string> data = {to_string(keywordLength), hint, maskedKeyword};
         sendMessageToClient(clientSocket[i], Message(HEADER_GAME_START, data));
     }
 
     // update game state
     gameState = ONGOING;
 
-
+    this->currentPlayerIdx = playerManager.getNextPlayerIndex();
 }
 
 Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
@@ -59,6 +61,46 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
             }
         }
     }
+    else if (message.header == HEADER_GUESS_CHAR_RESPONSE) {
+        char guessChar = message.data[0][0];
+
+        int charGuessResult = gameController.processPlayerAnswer(playerIdx, guessChar);
+        if (charGuessResult == 0) {
+            currentPlayerIdx = playerManager.getNextPlayerIndex();
+            turnState = 0;
+        }
+        else if (charGuessResult == 1) {
+            turnState = 1;
+        }
+
+        header = HEADER_GUESS_CHAR_RESULT;
+        data = {to_string(charGuessResult)};
+    }
+    else if (message.header == HEADER_GUESS_KEYWORD_RESPONSE) {
+        string clientKeyword = message.data[0];
+        int keywordGuessResult = gameController.processPlayerAnswer(playerIdx, clientKeyword);
+
+        if (keywordGuessResult == 0) {
+            playerManager.disqualify(playerIdx);
+            currentPlayerIdx = playerManager.getNextPlayerIndex();
+            turnState = 0;
+        }
+        else if (keywordGuessResult == 1) {
+            gameState = FINISHED;
+        }
+
+        header = HEADER_GUESS_KEYWORD_RESULT;
+        data = {to_string(keywordGuessResult)};
+    }
+    else if (message.header == HEADER_UPDATE_GAME_INFO) {
+//        string username = message.data[0];
+//        string maskedKeyword = message.data[1];
+//        int playerScore = gameController.getPlayerScore()[playerIdx];
+
+
+//        printf("")
+//        printf("Keyword: %s\n", maskedKeyword.c_str());
+    }
     else if (message.header == HEADER_BAD_MESSAGE) {
         puts("Something wrong I can feel it...");
         exit(1);
@@ -66,6 +108,8 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
 	else { // Unknown syntax -> Bad syntax
 		header = HEADER_BAD_MESSAGE;
 	}
+
+    string maskedKeyword = gameController.getMaskedKeyword();
 
     return Message(header, data);
 }
@@ -143,10 +187,18 @@ void ServerSocket::handleGameLogic() {
     }
 
     if (gameState == ONGOING) {
-
+        if (turnState == 0) {
+            sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_CHAR_REQUEST));
+        }
+        else {
+            int isAllowedToGuessKW = gameController.isAllowToGuessKW();
+            if (isAllowedToGuessKW) {
+                sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_KEYWORD_REQUEST));
+            }
+        }
     }
     else if (gameState == FINISHED) {
-
+        puts("Game finished");
     }
 }
 
@@ -244,5 +296,8 @@ void ServerSocket::mainLoop() {
         }
 
         handleGameLogic();
+        if (gameState == FINISHED) {
+            break;
+        }
     }
 }
