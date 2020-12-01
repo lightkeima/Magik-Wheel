@@ -10,7 +10,7 @@ Message::Message(string buffer) {
     string __tmp(buffer);
     stringstream ss(__tmp);
     string token;
-    while (ss >> token) {
+    while (getline(ss, token, DELIM)) {
         if (header == "")
             header = token;
         else
@@ -22,6 +22,6 @@ string Message::str() {
     stringstream ss;
     ss << header;
     for (string token: data)
-        ss << " " << token;
+        ss << DELIM << token;
     return ss.str();
 }

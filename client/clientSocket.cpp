@@ -45,8 +45,14 @@ Message ClientSocket::serverResponseHandler(Message message) {
     else if (message.header == HEADER_REGISTER_SUCCESS) {
         puts("Registered success! Waiting for the game to start...");
     }
+    else if (message.header == HEADER_GAME_START) {
+        puts("Game started!");
+        printf("Keyword length: %s\n", );
+    }
+    else if (message.header == HEADER_GAME_ALREADY_STARTED) {
+        puts("Game has already started. Please wait for another game.");
+    }
     else if (message.header == HEADER_BAD_MESSAGE) {
-        cout << message.str() << endl;
         puts("Something wrong I can feel it...");
         exit(1);
     }

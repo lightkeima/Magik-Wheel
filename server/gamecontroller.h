@@ -10,8 +10,8 @@ using namespace std;
 class GameController
 {
 private:
-    const int MAX_TURN = 5;
-    const int START_GUESSING_KW_TURN = 2;
+    static const int MAX_TURN = 5;
+    static const int START_GUESSING_KW_TURN = 2;
 
     int numPlayers;
     vector<int> playerScore;

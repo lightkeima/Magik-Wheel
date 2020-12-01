@@ -15,6 +15,12 @@
 #include "playerManager.h"
 #include "gamecontroller.h"
 
+enum GameState {
+    NOT_STARTED,
+    ONGOING,
+    FINISHED
+};
+
 using namespace std;
 
 class ServerSocket {
@@ -25,8 +31,14 @@ private:
   // maximum number of client
   int maxClient;
 
+  // current number of client
+  int nClient;
+
   // path of the keyword database
   string dbPath;
+
+  // current state of the game
+  GameState gameState;
 
   // list of client socket descriptor
   vector<int> clientSocket;
@@ -35,16 +47,23 @@ private:
 
   GameController gameController;
 
+  // setup before starting the game
   void startGame();
 
   // send message to a client
-  bool sendMessageToClient(int clientIdx, Message message);
+  bool sendMessageToClient(int clientSocket, Message message);
 
+  // handle when a new client connect to the server
   Message clientConnectedHandler(int clientIdx);
 
+  // handle when a new reponse is received from the server
   Message clientResponseHandler(int clientIdx, Message message);
   
-  void clientDisconnectedHandler(int clientIdx);  
+  // handle when a client disconnected from the server
+  void clientDisconnectedHandler(int clientIdx);
+
+  // handle game logic
+  void handleGameLogic();
   
 public:
   ServerSocket(int maxClient, string dbPath);

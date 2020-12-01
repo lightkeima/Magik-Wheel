@@ -4,10 +4,32 @@ ServerSocket::ServerSocket(int maxClient, string dbPath) {
 	this->maxClient = maxClient;
 	this->dbPath = dbPath;
     this->playerManager = PlayerManager(maxClient);
+    this->gameState = NOT_STARTED;
 }
 
 void ServerSocket::startGame() {
-	
+    playerManager.startGame();
+
+    // sort the player's socket by the playing order (also remove empty socket)
+    clientSocket = playerManager.template reorderByPlayerOrder<int>(clientSocket);
+    nClient = clientSocket.size();
+
+    // initialize game controller
+    gameController = GameController(nClient, Database(dbPath));
+
+    // notify all client that game has started
+    // send keyword length and hint to client
+    for(int i = 0; i < nClient; ++i) {
+        int keywordLength = gameController.getKeyword().length();
+        string hint = gameController.getHint();
+        vector<string> data = {to_string(keywordLength), hint};
+        sendMessageToClient(clientSocket[i], Message(HEADER_GAME_START, data));
+    }
+
+    // update game state
+    gameState = ONGOING;
+
+
 }
 
 Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
@@ -16,6 +38,7 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
     string header;
 	vector<string> data;
 
+    // client register username
     if (message.header == HEADER_UNAME_RESPONSE) {
         if (message.data.size() != 1) { // Bad syntax
             header = HEADER_BAD_MESSAGE;
@@ -37,7 +60,6 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
         }
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
-        cout << message.str() << endl;
         puts("Something wrong I can feel it...");
         exit(1);
     }
@@ -58,14 +80,14 @@ void ServerSocket::clientDisconnectedHandler(int clientIdx) {
 	playerManager.unregisterPlayer(clientIdx);
 }
 
-bool ServerSocket::sendMessageToClient(int socket, Message message) {
+bool ServerSocket::sendMessageToClient(int clientSocket, Message message) {
     // Header is empty -> Client have no reponse
     if (message.header == "")
         return true;
     string __message = message.str();
     // Otherwise, send the message normally
     const char* buffer = __message.c_str();
-    if (send(socket, buffer, strlen(buffer), 0) != strlen(buffer)) {
+    if (send(clientSocket, buffer, strlen(buffer), 0) != strlen(buffer)) {
         puts("Failed to send message to client");
         return false;
     }
@@ -107,10 +129,32 @@ bool ServerSocket::initSocket() {
 	return true;
 }
 
+void ServerSocket::handleGameLogic() {
+    printf("Client socket:");
+    for(int i = 0; i < nClient; ++i)
+        printf(" %d", clientSocket[i]);
+    puts("");
+
+    if (gameState == NOT_STARTED) {
+        // Check if there's enough player to start the game
+        if (playerManager.canStartGame()) {
+            startGame();
+        }
+    }
+
+    if (gameState == ONGOING) {
+
+    }
+    else if (gameState == FINISHED) {
+
+    }
+}
+
 void ServerSocket::mainLoop() {
 	puts("Waiting for players...");
 
-	clientSocket.assign(maxClient, 0);
+    nClient = maxClient;
+    clientSocket.assign(nClient, 0);
 	
 	while (true) {
 		fd_set readfds; 
@@ -122,7 +166,7 @@ void ServerSocket::mainLoop() {
 		// highest file descriptor number, need it for the select function 
 		int maxSd = serverSocket; 				
 		// add child sockets to set 
-		for (int i = 0; i < maxClient; i++) { 
+        for (int i = 0; i < nClient; i++) {
 			// socket descriptor 
 			int sd = clientSocket[i]; 					
 			// if valid socket descriptor then add to read list 
@@ -143,48 +187,62 @@ void ServerSocket::mainLoop() {
 				continue;
 			}
 
-			bool emptySlotFound = false;
-			// add new socket to array of sockets 
-			for (int i = 0; i < maxClient; i++) {
-				// if position is empty 
-				if (clientSocket[i] == 0) { 
-					emptySlotFound = true;
-					clientSocket[i] = newSocket;
-					printf("Adding to list of sockets as %d\n", i);
-					sendMessageToClient(newSocket, clientConnectedHandler(i));
-					break; 
-				}
-			}
+            // If game already started or finished, new player are not accepted
+            if (gameState == ONGOING || gameState == FINISHED) {
+                puts("Game already started");
+                sendMessageToClient(newSocket, Message(HEADER_GAME_ALREADY_STARTED));
+                close(newSocket);
+            }
+            else {
+                // find an empty slot
+                int emptySlot = -1;
+                for (int i = 0; i < nClient; i++) {
+                    if (clientSocket[i] == 0) {
+                        emptySlot = i;
+                        break;
+                    }
+                }
 
-			// No position is available, reject and close the connection
-			if (!emptySlotFound) {
-				puts("Server is full");
-				sendMessageToClient(newSocket, Message(HEADER_SERVER_FULL));
-				close(newSocket);
-			}
+                // if an empty slot is found
+                if (emptySlot != -1) {
+                    printf("Adding to list of sockets as %d\n", emptySlot);
+                    clientSocket[emptySlot] = newSocket;
+                    sendMessageToClient(newSocket, clientConnectedHandler(emptySlot));
+                }
+                // Otherwise, reject and close the connection
+                else {
+                    puts("Server is full");
+                    sendMessageToClient(newSocket, Message(HEADER_SERVER_FULL));
+                    close(newSocket);
+                }
+            }
 		}
+        // Else it's some IO operation on some other socket
+        else {
+            for (int i = 0; i < nClient; i++) {
+                int sd = clientSocket[i];
 
-		// Else it's some IO operation on some other socket 
-		for (int i = 0; i < maxClient; i++) {   
-			int sd = clientSocket[i];   
-						
-			if (FD_ISSET(sd, &readfds)) {   
-				char clientMessage[MAX_BUFFER+1];
-				int valread;
-				// Check if it was for closing, and also read the incoming message  
-				if ((valread = read(sd, clientMessage, MAX_BUFFER)) == 0) {   
-					clientDisconnectedHandler(i);
-					// Close the socket and mark as 0 in list for reuse  
-					close(sd);
-					clientSocket[i] = 0;
-				}   							
-				else {   
-					// Set the string terminating NULL byte on the end of the data read  
-					clientMessage[valread] = 0;
-					Message serverMessage = clientResponseHandler(i, string(clientMessage));
-					sendMessageToClient(clientSocket[i], serverMessage);
-				}
-			}
-		}
-	}
+                if (FD_ISSET(sd, &readfds)) {
+                    char clientMessage[MAX_BUFFER+1];
+                    int valread;
+                    // Check if it was for closing, and also read the incoming message
+                    if ((valread = read(sd, clientMessage, MAX_BUFFER)) == 0) {
+                        clientDisconnectedHandler(i);
+                        // Close the socket and mark as 0 in list for reuse
+                        close(sd);
+                        clientSocket[i] = 0;
+                    }
+                    else {
+                        // Set the string terminating NULL byte on the end of the data read
+                        clientMessage[valread] = 0;
+                        // Handle the message and send appropriate response
+                        Message serverMessage = clientResponseHandler(i, string(clientMessage));
+                        sendMessageToClient(clientSocket[i], serverMessage);
+                    }
+                }
+            }
+        }
+
+        handleGameLogic();
+    }
 }

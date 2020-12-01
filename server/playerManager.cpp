@@ -10,7 +10,8 @@ PlayerManager::PlayerManager() {}
 
 PlayerManager::PlayerManager(int maxPlayer) {
     this->maxPlayer = maxPlayer;
-    players.assign(maxPlayer, Player());
+    this->nPlayer = 0;
+    this->players.assign(maxPlayer, Player());
 }
 
 string PlayerManager::getPlayerUsername(int playerIdx) {
@@ -36,13 +37,23 @@ bool PlayerManager::isDuplicatedUsername(string username) {
 }
 
 void PlayerManager::registerPlayer(int playerIdx, string username) {
-    players[playerIdx].id = ++currentID;
-    players[playerIdx].isInGame = false;
-    players[playerIdx].username = username;
+    if (players[playerIdx].id == -1) {
+        ++nPlayer;
+        players[playerIdx].id = ++currentID;
+        players[playerIdx].isInGame = false;
+        players[playerIdx].username = username;
+    }
 }
 
 void PlayerManager::unregisterPlayer(int playerIdx) {
-    players[playerIdx] = Player();
+    if (players[playerIdx].id != -1) {
+        players[playerIdx] = Player();
+        --nPlayer;
+    }
+}
+
+bool PlayerManager::canStartGame() {
+    return nPlayer == maxPlayer;
 }
 
 void PlayerManager::startGame() {
@@ -56,7 +67,7 @@ void PlayerManager::startGame() {
     }
 
     sort(playerOrder.begin(), playerOrder.end(),
-         [&] (int i, int j) {
+        [&] (int i, int j) {
         return players[i].id < players[j].id;
     }
     );
@@ -66,12 +77,8 @@ void PlayerManager::startGame() {
     playerIdx = -1;
 }
 
-template<class T>
-vector<T> PlayerManager::reorderByPlayerOrder(vector<T> objVec) {
-    vector<T> result(playerOrder.size());
-    for(int i = 0; i < playerOrder.size(); ++i)
-        result[i] = objVec[playerOrder[i]];
-    return result;
+void PlayerManager::disqualify(int playerIdx) {
+    players[playerIdx].isInGame = false;
 }
 
 int PlayerManager::getNextPlayerIndex() {
