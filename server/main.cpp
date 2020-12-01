@@ -5,6 +5,7 @@
 #include <guicontroller.h>
 int main(int argc, char *argv[])
 {
+<<<<<<< Updated upstream
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -25,4 +26,34 @@ int main(int argc, char *argv[])
     guiController.FlipCharacter('a');
     guiController.FlipCharacter('f');
     return app.exec();
+=======
+//    string dbPath = "/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt";
+    string dbPath = "/home/incenger/Courses/CS494/lab01/Magik-Wheel/server/database/database.txt";
+    ServerSocket serverSocket(3, dbPath);
+    serverSocket.initSocket();
+    serverSocket.mainLoop();
+
+//    GameLogicTest();
+
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+//    QGuiApplication app(argc, argv);
+//    QQmlEngine xengine;
+//    const QUrl url(QStringLiteral("qrc:/main.qml"));
+//    QQmlComponent component(&xengine,
+//            url);
+//    QObject *object = component.create();
+
+//    GUIController guiController(object);
+//    guiController.ShowHint("Love anime");
+//    guiController.SetWord("Weeboo");
+//    guiController.ShowResultAtPosition(0);
+//    guiController.ShowResultAtPosition(1);
+//    guiController.ShowResultAtPosition(2);
+//    guiController.ShowResultAtPosition(3);
+//    guiController.ShowResultAtPosition(4);
+//    guiController.FlipCharacter('a');
+//    guiController.FlipCharacter('f');
+//    return app.exec();
+>>>>>>> Stashed changes
 }
