@@ -60,7 +60,6 @@ Button {
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
     id: container
     property string name: "Guess the Keyword"
-    anchors.horizontalCenter: parent.horizontalCenter
     objectName: "guess_button"
     background: Rectangle {
                 id: bg
