@@ -11,7 +11,10 @@ SOURCES += \
         database.cpp \
         gamecontroller.cpp \
         guicontroller.cpp \
-        main.cpp
+        main.cpp \
+        message.cpp \
+        playerManager.cpp \
+        serverSocket.cpp
 
 RESOURCES += qml.qrc
 
@@ -30,7 +33,10 @@ HEADERS += \
     database.h \
     gamecontroller.h \
     guicontroller.h \
-    nlohmann/json.hpp
+    message.h \
+    nlohmann/json.hpp \
+    playerManager.h \
+    serverSocket.h
 
 DISTFILES += \
     database/database.json \

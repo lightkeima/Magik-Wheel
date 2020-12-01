@@ -9,21 +9,22 @@
 #include "gamecontroller.h"
 #include <chrono>
 #include <thread>
-
+#include "message.h"
+#include "serverSocket.h"
 
 using namespace std;
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 using namespace std::this_thread; // sleep_for, sleep_until
 using namespace std::chrono; // nanoseconds, system_clock, seconds
-
-
+/*
 void GameLogicTest() {
 
     // 0-index player
     vector<int> playerOrder{0, 2, 1, 3};
 
-    Database database = Database("/home/lightkeima/Courses/cs493/Magik-Wheel/server/database/database.txt");
+    Database database = Database("/home/lightkeima/Courses/CS494/Magik-Wheel/server/database/database.txt");
+
     // Number of player
     int N = 4;
 
@@ -109,9 +110,11 @@ void GameLogicTest() {
         cout << "Player " << i << ": " << scores[i] << endl;
     }
 }
+*/
 
 int main(int argc, char *argv[])
 {
+/*<<<<<<< HEAD
 
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -220,7 +223,34 @@ int main(int argc, char *argv[])
     for (int i = 0; i < N; i++) {
         cout << "Player " << i << ": " << scores[i] << endl;
     }
-*/
-    return app.exec();
 
+    return app.exec();
+*/
+    string dbPath = "/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt";
+    ServerSocket serverSocket(3, dbPath);
+    serverSocket.initSocket();
+    serverSocket.mainLoop();
+
+//    GameLogicTest();
+
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+//    QGuiApplication app(argc, argv);
+//    QQmlEngine xengine;
+//    const QUrl url(QStringLiteral("qrc:/main.qml"));
+//    QQmlComponent component(&xengine,
+//            url);
+//    QObject *object = component.create();
+
+//    GUIController guiController(object);
+//    guiController.ShowHint("Love anime");
+//    guiController.SetWord("Weeboo");
+//    guiController.ShowResultAtPosition(0);
+//    guiController.ShowResultAtPosition(1);
+//    guiController.ShowResultAtPosition(2);
+//    guiController.ShowResultAtPosition(3);
+//    guiController.ShowResultAtPosition(4);
+//    guiController.FlipCharacter('a');
+//    guiController.FlipCharacter('f');
+//    return app.exec();
 }

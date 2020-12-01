@@ -3,8 +3,11 @@
 // The player order should be controlled by the Server
 // The game logic will tells the server whether the player is disqualified or not
 
-GameController::GameController(int N, Database database)
-{
+GameController::GameController() {
+
+}
+
+GameController::GameController(int N, Database database) {
     this->numPlayers = N;
     this->currentTurn = 1;
     this->playerScore.assign(N, 0);
@@ -152,7 +155,6 @@ bool GameController::isEndGame() {
 }
 
 string GameController::getMaskedKeyword() {
-
     string maskedKeyword;
 
     for (int i = 0; i < (int) this->keyword.length(); i++) {
