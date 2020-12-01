@@ -15,8 +15,8 @@ Window {
         spacing: 5
         MessagePanel{}
         WordDisplayPanel{}
+        GuessDialogOpenButton{}
     }
-
     Row{
         anchors.leftMargin: 15
         anchors.left: parent.left

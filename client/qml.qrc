@@ -899,6 +899,6 @@
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (7).png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (8).png</file>
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (9).png</file>
-        <file>content/GuessDialog.qml</file>
+        <file>content/GuessDialogOpenButton.qml</file>
     </qresource>
 </RCC>
