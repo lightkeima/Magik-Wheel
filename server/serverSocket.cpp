@@ -1,38 +1,51 @@
 #include "serverSocket.h"
 
-ServerSocket::ServerSocket(int maxClient) {	
+ServerSocket::ServerSocket(int maxClient, string dbPath) {	
 	this->maxClient = maxClient;
+	this->dbPath = dbPath;
+    this->playerManager = PlayerManager(maxClient);
+}
+
+void ServerSocket::startGame() {
+	
 }
 
 Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
-	// string header;
-	// vector<string> data;
+    cout << "Received message: " << message.str() << endl;
 
-	// if (message.header == HEADER_UNAME_RESPONSE) {
-	// 	if (data.size() != 1) { // Bad syntax
-	// 		header = HEADER_BAD_MESSAGE;			
-	// 	}
-	// 	else {
-	// 		string username = data[0];
-	// 		if (!playerManager.isValidUsername(username)) {
-	// 			header = HEADER_UNAME_INVALID;
-	// 		} 
-	// 		else if (playerManager.isDuplicatedUsername(username)) {
-	// 			header = HEADER_UNAME_DUPLICATED;
-	// 		} 
-	// 		else {
-	// 			playerManager.registerPlayer(playerIdx, username);
-	// 			header = HEADER_REGISTER_SUCCESS;
-	// 		}
-	// 	}
-	// } 
-	// else { // Unknown syntax -> Bad syntax
-	// 	header = HEADER_BAD_MESSAGE;
-	// } 
+    string header;
+	vector<string> data;
 
-	string header = "TEST_HEADER";
-	vector<string> data = {"Testing", "data"};
-	return Message(header, data);
+    if (message.header == HEADER_UNAME_RESPONSE) {
+        if (message.data.size() != 1) { // Bad syntax
+            header = HEADER_BAD_MESSAGE;
+        }
+        else {
+            string username = message.data[0];
+            if (!playerManager.isValidUsername(username)) {
+                header = HEADER_UNAME_INVALID;
+            }
+            else if (playerManager.isDuplicatedUsername(username)) {
+                header = HEADER_UNAME_DUPLICATED;
+                data = {username};
+            }
+            else {
+                printf("Welcome to the game, %s!\n", username.c_str());
+                playerManager.registerPlayer(playerIdx, username);
+                header = HEADER_REGISTER_SUCCESS;
+            }
+        }
+    }
+    else if (message.header == HEADER_BAD_MESSAGE) {
+        cout << message.str() << endl;
+        puts("Something wrong I can feel it...");
+        exit(1);
+    }
+	else { // Unknown syntax -> Bad syntax
+		header = HEADER_BAD_MESSAGE;
+	}
+
+    return Message(header, data);
 }
 
 Message ServerSocket::clientConnectedHandler(int clientIdx) {
@@ -40,11 +53,23 @@ Message ServerSocket::clientConnectedHandler(int clientIdx) {
 }
 
 void ServerSocket::clientDisconnectedHandler(int clientIdx) {
-	
+	string username = playerManager.getPlayerUsername(clientIdx);
+	printf("%s has left the game\n", username.c_str());
+	playerManager.unregisterPlayer(clientIdx);
 }
 
-bool ServerSocket::sendMessageToClient(int clientIdx, Message message) {
-
+bool ServerSocket::sendMessageToClient(int socket, Message message) {
+    // Header is empty -> Client have no reponse
+    if (message.header == "")
+        return true;
+    string __message = message.str();
+    // Otherwise, send the message normally
+    const char* buffer = __message.c_str();
+    if (send(socket, buffer, strlen(buffer), 0) != strlen(buffer)) {
+        puts("Failed to send message to client");
+        return false;
+    }
+    return true;
 }
 
 bool ServerSocket::initSocket() {
@@ -125,13 +150,8 @@ void ServerSocket::mainLoop() {
 				if (clientSocket[i] == 0) { 
 					emptySlotFound = true;
 					clientSocket[i] = newSocket;
-					printf("Adding to list of sockets as %d\n" , i);
-					// send first message
-					string __message = clientConnectedHandler(i).str();
-					const char* message = __message.c_str();
-					if (send(newSocket, message, strlen(message), 0) != strlen(message)) { 
-						puts("Failed to send message to client");
-					}
+					printf("Adding to list of sockets as %d\n", i);
+					sendMessageToClient(newSocket, clientConnectedHandler(i));
 					break; 
 				}
 			}
@@ -139,9 +159,7 @@ void ServerSocket::mainLoop() {
 			// No position is available, reject and close the connection
 			if (!emptySlotFound) {
 				puts("Server is full");
-				string __message = Message(HEADER_SERVER_FULL).str();
-				const char* message = __message.c_str();
-				send(newSocket, message, strlen(message), 0);   
+				sendMessageToClient(newSocket, Message(HEADER_SERVER_FULL));
 				close(newSocket);
 			}
 		}
@@ -155,25 +173,16 @@ void ServerSocket::mainLoop() {
 				int valread;
 				// Check if it was for closing, and also read the incoming message  
 				if ((valread = read(sd, clientMessage, MAX_BUFFER)) == 0) {   
-					sockaddr_in address;	
-					int addrlen;
-					// Somebody disconnected, get his details and print
-					getpeername(sd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-					printf("Host disconnected, ip %s, port %d\n", inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
-
 					clientDisconnectedHandler(i);
-								
 					// Close the socket and mark as 0 in list for reuse  
 					close(sd);
 					clientSocket[i] = 0;
 				}   							
-				// Echo back the message that came in  
 				else {   
 					// Set the string terminating NULL byte on the end of the data read  
 					clientMessage[valread] = 0;
-					string __serverMessage = clientResponseHandler(i, string(clientMessage)).str();
-					const char* serverMessage = __serverMessage.c_str();
-					send(sd, serverMessage, strlen(serverMessage), 0);   
+					Message serverMessage = clientResponseHandler(i, string(clientMessage));
+					sendMessageToClient(clientSocket[i], serverMessage);
 				}
 			}
 		}

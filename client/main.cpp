@@ -4,6 +4,7 @@
 #include <QQuickView>
 #include <guicontroller.h>
 #include "guessbutton.h"
+#include "clientSocket.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -19,88 +20,11 @@
 
 using namespace std;
 
-const int PORT = 8888;
-
 int main(int argc, char *argv[])
 {
-
-    int sock_cli;
-    fd_set rfds;
-    timeval tv;
-    int retval, maxfd = -1;
-
-    sock_cli = socket(AF_INET, SOCK_STREAM, 0);
-
-    sockaddr_in servaddr;
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(PORT);
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-    // Connect to server
-    if (connect(sock_cli, (sockaddr*) &servaddr, sizeof(servaddr)) < 0) {
-        perror("Connect failed");
-        exit(1);
-    }
-    printf("Connects succesfully\n");
-
-
-
-    while(true) {
-
-        // Clear the collection of readable file descriptors
-        FD_ZERO(&rfds);
-
-        // Add standard input file descriptors to the collection
-        FD_SET(0, &rfds);
-
-        // Add the currently connected fd to the collection
-        FD_SET(sock_cli, &rfds);
-
-        if (maxfd < sock_cli) maxfd = sock_cli;
-
-
-        // Setting the timeout
-        tv.tv_sec = 1;
-        tv.tv_usec = 0;
-
-        // Waiting for chat from the server
-        retval = select(maxfd+1, &rfds, NULL, NULL, &tv);
-
-        if (retval == -1) {
-            perror("Select failed");
-            exit(1);
-        } else if (retval == 0) {
-            continue;
-        } else {
-            if (FD_ISSET(sock_cli, &rfds)) {
-                // Receive message from the server
-                char recvbuf[1024];
-                int len;
-                if ((len = recv(sock_cli, recvbuf, sizeof(recvbuf), 0)) == 0) {
-                    puts("Connection to server closed");
-                    break;
-                }
-                recvbuf[len] = 0;
-                std::cout << "Message from server: " << recvbuf << std::endl;
-                memset(recvbuf, 0, sizeof(recvbuf));
-            }
-
-            // User starts writing message
-            if (FD_ISSET(0, &rfds)) {
-                char sendbuf[1024];
-                fgets(sendbuf, sizeof(sendbuf), stdin);
-                send(sock_cli, sendbuf, strlen(sendbuf), 0);
-                memset(sendbuf, 0, sizeof(sendbuf));
-            }
-        }
-    }
-
-    close(sock_cli);
-
-    return 0;
-
-
+    ClientSocket clientSocket;
+    clientSocket.initSocket();
+    clientSocket.mainLoop();
 
 //    int sock_cli = socket(AF_INET, SOCK_STREAM, 0);
 

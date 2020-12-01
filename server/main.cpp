@@ -9,14 +9,14 @@
 #include "gamecontroller.h"
 #include <chrono>
 #include <thread>
-
+#include "message.h"
+#include "serverSocket.h"
 
 using namespace std;
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 using namespace std::this_thread; // sleep_for, sleep_until
 using namespace std::chrono; // nanoseconds, system_clock, seconds
-
 
 void GameLogicTest() {
 
@@ -113,7 +113,12 @@ void GameLogicTest() {
 
 int main(int argc, char *argv[])
 {
-    GameLogicTest();
+    string dbPath = "/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt";
+    ServerSocket serverSocket(3, dbPath);
+    serverSocket.initSocket();
+    serverSocket.mainLoop();
+
+//    GameLogicTest();
 
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

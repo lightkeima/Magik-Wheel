@@ -36,6 +36,7 @@ private:
 
 
 public:
+    GameController();
 
     GameController(int N, Database database);
 

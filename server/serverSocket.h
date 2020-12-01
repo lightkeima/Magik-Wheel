@@ -11,22 +11,31 @@
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 
-#include "../message.h"
-// #include "gamecontroller.h"
+#include "message.h"
+#include "playerManager.h"
+#include "gamecontroller.h"
 
 using namespace std;
 
 class ServerSocket {
 private:
-//  const int PORT = 7000;
   // server socket descriptor
   int serverSocket;
 
   // maximum number of client
   int maxClient;
 
+  // path of the keyword database
+  string dbPath;
+
   // list of client socket descriptor
   vector<int> clientSocket;
+
+  PlayerManager playerManager;
+
+  GameController gameController;
+
+  void startGame();
 
   // send message to a client
   bool sendMessageToClient(int clientIdx, Message message);
@@ -36,9 +45,9 @@ private:
   Message clientResponseHandler(int clientIdx, Message message);
   
   void clientDisconnectedHandler(int clientIdx);  
-
+  
 public:
-  ServerSocket(int maxClient);
+  ServerSocket(int maxClient, string dbPath);
 
   // set up the server socket
   bool initSocket();
