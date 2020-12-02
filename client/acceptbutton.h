@@ -6,14 +6,14 @@
 #include <QQuickItem>
 #include <QWidget>
 
-class GuessButton: public QObject
+class AcceptButton: public QObject
 {
+    QString objName;
     Q_OBJECT
 private:
-    char character;
 public:
-    explicit GuessButton(QObject* parent = 0, char character = 'a'):QObject(parent){
-        this->character = character;
+    explicit AcceptButton(QObject* parent = 0, QString objName = ""):QObject(parent){
+        this->objName = objName;
     }
     Q_INVOKABLE void onButtonClick();
 };

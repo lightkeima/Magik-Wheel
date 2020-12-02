@@ -22,10 +22,11 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+    /*
     ClientSocket clientSocket;
     clientSocket.initSocket();
     clientSocket.mainLoop();
-
+*/
 //    int sock_cli = socket(AF_INET, SOCK_STREAM, 0);
 
 //    sockaddr_in serv_addr;
@@ -55,6 +56,29 @@ int main(int argc, char *argv[])
 //    }
 //    close(sock_cli);
 
+      QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+      QGuiApplication app(argc, argv);
+      qmlRegisterType<GuessButton>("client.guessbutton", 1, 0, "GuessButton");
+      QQmlEngine xengine;
+      const QUrl url(QStringLiteral("qrc:/main.qml"));
+      QObject::connect(&xengine, &QQmlApplicationEngine::quit, &QGuiApplication::quit);
+      QQmlComponent component(&xengine,
+              url);
+      QObject *object = component.create();
+
+      GUIController guiController(object);
+      guiController.ShowHint("Love anime");
+      guiController.SetWord("Weeboo");
+      guiController.ShowResultAtPosition(0);
+      guiController.ShowResultAtPosition(1);
+      guiController.ShowResultAtPosition(2);
+      guiController.ShowResultAtPosition(3);
+      guiController.ShowResultAtPosition(4);
+      guiController.FlipCharacter('a');
+      guiController.FlipCharacter('f');
+
+      return app.exec();
 }
 
 

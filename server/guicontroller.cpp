@@ -66,6 +66,21 @@ void GUIController::UpdatePlayerScore(unsigned int player_index, unsigned int po
     }
 }
 
+
+void GUIController::RenewPlayerList(){
+    for(int i = 0; i < 10; i++){
+        std::string id = "player";
+        id.push_back('0'+i);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* playerInfo = root->findChild<QObject*>(qid);
+        if(playerInfo) {
+            playerInfo->setProperty("turn", false);
+            playerInfo->setProperty("disqualified", false);
+            playerInfo->setProperty("point", 0);
+        }
+    }
+}
+
 void GUIController::MarkPlayer(unsigned int player_index){
     for(int i = 0; i < 10; i++){
         std::string id = "player";
@@ -84,6 +99,26 @@ void GUIController::MarkPlayer(unsigned int player_index){
         playerInfo->setProperty("turn", true);
     }
 }
+
+void GUIController::MarkPlayerDisqualified(unsigned int player_index){
+    for(int i = 0; i < 10; i++){
+        std::string id = "player";
+        id.push_back('0'+i);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* playerInfo = root->findChild<QObject*>(qid);
+        if(playerInfo) {
+            playerInfo->setProperty("turn", false);
+        }
+    }
+    std::string id = "player";
+    id.push_back('0'+player_index);
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* playerInfo = root->findChild<QObject*>(qid);
+    if(playerInfo) {
+        playerInfo->setProperty("disqualified", true);
+    }
+}
+
 
 void GUIController::CreatePlayerList(unsigned int number_of_player){
     for(unsigned int i = 0; i < 10;++i){
