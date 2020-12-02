@@ -59,6 +59,7 @@ Flipable {
     property alias source: frontImage.source
     property string character: ""
     property bool flipped: false
+    property bool playerturn: false
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0
@@ -91,17 +92,22 @@ Flipable {
 
     state: "front"
 
-    MouseArea { anchors.fill: parent; onClicked: guessButton.onButtonClick() }
+    MouseArea { anchors.fill: parent; onClicked: {
+            if (container.flipped==false && playerturn){
+                guessButton.onButtonClick()
+                container.flipped=true
+            }
+        }}
 
     transform: Rotation {
         id: rotation; origin.x: container.width / 2; origin.y: container.height / 2
         axis.x: container.xAxis; axis.y: container.yAxis; axis.z: 0
     }
 
-    states: State {
+    states: [State {
         name: "front"; when: container.flipped
-        PropertyChanges { target: rotation; angle: container.angle }
-    }
+        PropertyChanges { target: rotation; angle: container.angle ;}
+    }]
 
     transitions: Transition {
         ParallelAnimation {

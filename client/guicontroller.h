@@ -27,6 +27,7 @@ public:
     void MarkPlayer(unsigned int player_index);
     void MarkPlayerDisqualified(unsigned int player_index);
     void FlipCharacter(char character);
+    void ResetCharacterList();
 
     std::string GetStringFromTextField(QString objectname);
 

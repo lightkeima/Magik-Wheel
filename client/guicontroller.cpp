@@ -150,6 +150,21 @@ void GUIController::FlipCharacter(char character){
     }
 }
 
+void GUIController::ResetCharacterList(){
+    for(int i = 0; i < 26;++i){
+        char character = 'a' + i;
+        std::string id = "guess ";
+        id.push_back(character);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* characterCard = root->findChild<QObject*>(qid);
+        if(characterCard) {
+            characterCard->setProperty("flipped", false);
+        }
+    }
+
+}
+
+
 std::string GUIController::GetStringFromTextField(QString objectname){
     std::string result = "";
     QObject* textField = root->findChild<QObject*>(objectname);
