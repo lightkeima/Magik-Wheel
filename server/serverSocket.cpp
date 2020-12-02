@@ -32,6 +32,9 @@ void ServerSocket::startGame() {
     gameState = ONGOING;
 
     this->currentPlayerIdx = playerManager.getNextPlayerIndex();
+
+    // Start the first turn
+    nextTurn();
 }
 
 Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
@@ -75,6 +78,10 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
 
         header = HEADER_GUESS_CHAR_RESULT;
         data = {to_string(charGuessResult)};
+
+        if (gameState == ONGOING) {
+            nextTurn();
+        }
     }
     else if (message.header == HEADER_GUESS_KEYWORD_RESPONSE) {
         string clientKeyword = message.data[0];
@@ -91,15 +98,10 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
 
         header = HEADER_GUESS_KEYWORD_RESULT;
         data = {to_string(keywordGuessResult)};
-    }
-    else if (message.header == HEADER_UPDATE_GAME_INFO) {
-//        string username = message.data[0];
-//        string maskedKeyword = message.data[1];
-//        int playerScore = gameController.getPlayerScore()[playerIdx];
 
-
-//        printf("")
-//        printf("Keyword: %s\n", maskedKeyword.c_str());
+        if (gameState == ONGOING) {
+            nextTurn();
+        }
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
         puts("Something wrong I can feel it...");
@@ -173,32 +175,51 @@ bool ServerSocket::initSocket() {
 	return true;
 }
 
-void ServerSocket::handleGameLogic() {
-    printf("Client socket:");
-    for(int i = 0; i < nClient; ++i)
-        printf(" %d", clientSocket[i]);
-    puts("");
+void ServerSocket::sendGameResultToAllClient() {
+    string keyword = gameController.getKeyword();
+    vector<int> playerScore = gameController.getPlayerScore();
 
-    if (gameState == NOT_STARTED) {
-        // Check if there's enough player to start the game
-        if (playerManager.canStartGame()) {
-            startGame();
+    vector<string> gameInfo = {keyword, to_string(nClient)};
+    for(int i = 0; i < nClient; ++i) {
+        gameInfo.push_back(playerManager.getPlayerUsername(i));
+        gameInfo.push_back(to_string(playerScore[i]));
+    }
+
+    for(int i = 0; i < nClient; ++i) {
+        if (clientSocket[i] != 0) {
+            sendMessageToClient(clientSocket[i], Message(HEADER_GAME_FINISH, gameInfo));
+        }
+    }
+}
+
+void ServerSocket::nextTurn() {
+    // Sending current game info for all client to render
+    string maskedKeyword = gameController.getMaskedKeyword();
+    string playerTurn = playerManager.getPlayerUsername(currentPlayerIdx);
+    vector<int> playerScore = gameController.getPlayerScore();
+
+    vector<string> gameInfo = {maskedKeyword, playerTurn, to_string(nClient)};
+    for(int i = 0; i < nClient; ++i) {
+        gameInfo.push_back(playerManager.getPlayerUsername(i));
+        gameInfo.push_back(to_string(playerScore[i]));
+        gameInfo.push_back(to_string(gameController.isDisqualifiedPlayer(i)));
+    }
+
+    for(int i = 0; i < nClient; ++i) {
+        if (clientSocket[i] != 0) {
+            sendMessageToClient(clientSocket[i], Message(HEADER_UPDATE_GAME_INFO, gameInfo));
         }
     }
 
-    if (gameState == ONGOING) {
-        if (turnState == 0) {
-            sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_CHAR_REQUEST));
-        }
-        else {
-            int isAllowedToGuessKW = gameController.isAllowToGuessKW();
-            if (isAllowedToGuessKW) {
-                sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_KEYWORD_REQUEST));
-            }
-        }
+    // Ask current player to guess char or keyword, depend on the turn state
+    if (turnState == 0) {
+        sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_CHAR_REQUEST));
     }
-    else if (gameState == FINISHED) {
-        puts("Game finished");
+    else {
+        int isAllowedToGuessKW = gameController.isAllowToGuessKW();
+        if (isAllowedToGuessKW) {
+            sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_KEYWORD_REQUEST));
+        }
     }
 }
 
@@ -295,8 +316,15 @@ void ServerSocket::mainLoop() {
             }
         }
 
-        handleGameLogic();
-        if (gameState == FINISHED) {
+        if (gameState == NOT_STARTED) {
+            // Check if there's enough player to start the game
+            if (playerManager.canStartGame()) {
+                startGame();
+            }
+        }
+        else if (gameState == FINISHED) {
+            puts("Game finished");
+            sendGameResultToAllClient();
             break;
         }
     }

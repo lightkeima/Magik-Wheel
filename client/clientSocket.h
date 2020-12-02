@@ -16,6 +16,12 @@
 
 #include "message.h"
 
+enum GameState {
+    NOT_STARTED,
+    ONGOING,
+    FINISHED
+};
+
 using namespace std;
 
 class ClientSocket {
@@ -25,14 +31,14 @@ private:
 
   string username;
 
+  GameState gameState;
+
   // send message to server
   bool sendMessageToServer(Message message);
 
   Message serverResponseHandler(Message message);
 
   void serverDisconnectedHandler();
-
-  int turnCount;
 
 public:
   ClientSocket();

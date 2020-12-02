@@ -45,6 +45,8 @@ private:
 
     int currentPlayerIdx;
 
+    // turnState = 0: ask character from client
+    // turnState = 1: ask keyword from client
     int turnState;
 
     PlayerManager playerManager;
@@ -66,8 +68,10 @@ private:
     // handle when a client disconnected from the server
     void clientDisconnectedHandler(int clientIdx);
 
-    // handle game logic
-    void handleGameLogic();
+    void sendGameResultToAllClient();
+
+    // performing a turn (asking char or keyword)
+    void nextTurn();
 
 public:
     ServerSocket(int maxClient, string dbPath);

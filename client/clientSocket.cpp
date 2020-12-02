@@ -1,7 +1,7 @@
 #include "clientSocket.h"
 
 ClientSocket::ClientSocket() {
-
+    gameState = NOT_STARTED;
 }
 
 bool ClientSocket::sendMessageToServer(Message message) {
@@ -48,6 +48,8 @@ Message ClientSocket::serverResponseHandler(Message message) {
         puts("Registered success! Waiting for the game to start...");
     }
     else if (message.header == HEADER_GAME_START) {
+        gameState = ONGOING;
+
         int keywordLength = stoi(message.data[0]);
         string hint = message.data[1];
         string maskedKeyword = message.data[2];
@@ -93,16 +95,36 @@ Message ClientSocket::serverResponseHandler(Message message) {
         else {
             printf("Your keyword is incorrect! Better luck next time...\n");
         }
-
-//        int score = stoi(message.data[1]);
-//        printf("New score: %d\n", score);
     }
     else if (message.header == HEADER_UPDATE_GAME_INFO) {
-//        string player = message.data[0];
-//        string maskedKeyword = message.data[1];
+        string maskedKeyword = message.data[0];
+        string playerTurn = message.data[1];
+        int nClient = stoi(message.data[2]);
 
-//        printf("%s's turn", player.c_str());
-//        printf("Keyword: %s\n", maskedKeyword.c_str());
+        printf("Keyword: %s\n", maskedKeyword.c_str());
+
+        for(int i = 3; i < message.data.size(); i += 3) {
+            string username = message.data[i];
+            int playerScore = stoi(message.data[i+1]);
+            bool isDisqualified = stoi(message.data[i+2]);
+
+            printf("Player: %s - Score: %d - ", username.c_str(), playerScore);
+            puts(isDisqualified ? "Disqualified" : "In game");
+        }
+    }
+    else if (message.header == HEADER_GAME_FINISH) {
+        gameState = FINISHED;
+        puts("Game finished");
+
+        string keyword = message.data[0];
+        int nClient = stoi(message.data[1]);
+        printf("Keyword: %s\n", keyword.c_str());
+
+        for(int i = 2; i < message.data.size(); i += 2) {
+            string username = message.data[i];
+            int playerScore = stoi(message.data[i+1]);
+            printf("Player: %s - Score: %d\n", username.c_str(), playerScore);
+        }
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
         puts("Something wrong I can feel it...");
@@ -193,7 +215,11 @@ void ClientSocket::mainLoop() {
 //        fgets(sendbuf, sizeof(sendbuf), stdin);
 //        send(clientSocket, sendbuf, strlen(sendbuf), 0);
 //        memset(sendbuf, 0, sizeof(sendbuf));
-//      }
+//      }          
+    }
+
+    if (gameState == FINISHED) {
+        break;
     }
   }
 
