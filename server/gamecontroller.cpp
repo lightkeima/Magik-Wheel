@@ -8,8 +8,11 @@ GameController::GameController() {
 }
 
 GameController::GameController(int N, Database database) {
+    this->MAX_TURN = 2*N;
+    this->START_GUESSING_KW_TURN = N+1;
     this->numPlayers = N;
     this->currentTurn = 1;
+    this->consecutiveIncorrectGuess = 0;
     this->playerScore.assign(N, 0);
     this->isDisqualified.assign(N, false);
     this->kwDatabase = database;
@@ -52,6 +55,10 @@ int GameController::processPlayerAnswer(int playerIdx, char guessChar) {
         // Update the mask
         for (auto pos : latestCorrectCharGuessPos)
             masked[pos] = false;
+
+        consecutiveIncorrectGuess = 0;
+    } else {
+        consecutiveIncorrectGuess += 1;
     }
 
     currentTurn += 1;
@@ -67,6 +74,7 @@ void GameController::restart() {
     playerScore.assign(this->numPlayers, 0);
     isDisqualified.assign(this->numPlayers, false);
 
+    consecutiveIncorrectGuess = 0;
     currentTurn = 1;
     kwGuessed = false;
 
@@ -101,14 +109,12 @@ int GameController::processPlayerAnswer(int playerIdx, string guessKw) {
         this->isDisqualified[playerIdx]  = true;
     }
 
-    currentTurn += 1;
-
 
     return status;
 }
 
 bool GameController::isAllowToGuessKW() {
-    return this->currentTurn >= this->START_GUESSING_KW_TURN;
+    return this->currentTurn > this->START_GUESSING_KW_TURN;
 }
 
 pair<string, string> GameController::chooseRandomKeyword() {
@@ -151,7 +157,7 @@ bool GameController::isDisqualifiedPlayer(int idx) {
 }
 
 bool GameController::isEndGame() {
-    return this->kwGuessed || this->currentTurn > this->MAX_TURN;
+    return this->kwGuessed || this->consecutiveIncorrectGuess >= this->MAX_TURN;
 }
 
 string GameController::getMaskedKeyword() {

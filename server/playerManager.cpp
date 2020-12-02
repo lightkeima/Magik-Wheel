@@ -47,7 +47,8 @@ void PlayerManager::registerPlayer(int playerIdx, string username) {
 
 void PlayerManager::unregisterPlayer(int playerIdx) {
     if (players[playerIdx].id != -1) {
-        players[playerIdx] = Player();
+        players[playerIdx].id = -1;
+        players[playerIdx].isInGame = false;
         --nPlayer;
     }
 }
@@ -66,15 +67,27 @@ void PlayerManager::startGame() {
         }
     }
 
+//    for(int i = 0; i < maxPlayer; ++i) {
+//        printf("%s %d\n", players[i].username.c_str(), players[i].id);
+//    }
+
     sort(playerOrder.begin(), playerOrder.end(),
         [&] (int i, int j) {
         return players[i].id < players[j].id;
     }
     );
 
-    reorderByPlayerOrder(players);
+//    for(int x: playerOrder)
+//        printf("%d ", x);
+//    puts("");
+
+    players = reorderByPlayerOrder(players);
 
     playerIdx = -1;
+}
+
+bool PlayerManager::allPlayerDisqualified() {
+    return nPlayer == 0;
 }
 
 void PlayerManager::disqualify(int playerIdx) {

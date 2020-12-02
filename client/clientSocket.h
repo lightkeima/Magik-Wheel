@@ -50,6 +50,9 @@ public:
     // set up the client socket
     bool initSocket();
 
+    // reset socket
+    void resetSocket(int maxClient);
+
     // executing main loop of the socket
     void mainLoop();
 

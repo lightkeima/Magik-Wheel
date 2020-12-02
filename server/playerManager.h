@@ -48,6 +48,10 @@ public:
 
     void unregisterPlayer(int playerIdx);
 
+    // Check if all player are disqualified
+    bool allPlayerDisqualified();
+
+    // Check if the game can be started (enough player connected)
     bool canStartGame();
 
     void startGame();

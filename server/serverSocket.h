@@ -85,6 +85,9 @@ public:
     // set up the server socket
     bool initSocket();
 
+    // reset socket
+    void resetSocket(int maxClient);
+
     // executing main loop of the socket
     void mainLoop();
 };

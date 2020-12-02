@@ -8,6 +8,13 @@ ServerSocket::ServerSocket(int maxClient, string dbPath) {
     this->turnState = 0;
 }
 
+void ServerSocket::resetSocket(int maxClient) {
+    this->maxClient = maxClient;
+    this->playerManager = PlayerManager(maxClient);
+    this->gameState = NOT_STARTED;
+    this->turnState = 0;
+}
+
 void ServerSocket::startGame() {
     playerManager.startGame();
 
@@ -79,7 +86,12 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
             turnState = 0;
         }
         else if (charGuessResult == 1) {
-            turnState = 1;
+            if (gameController.isAllowToGuessKW()) {
+                turnState = 1;
+            }
+            else {
+                turnState = 0;
+            }
         }
 
         // Send result to client
@@ -92,6 +104,10 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
         data = {playerManager.getPlayerUsername(playerIdx), string(1, guessChar), to_string(charGuessResult)};
         sendMessageToAllClient(Message(header, data));
 
+        if (gameController.isEndGame() || playerManager.allPlayerDisqualified()) {
+//            puts("Game finished - Guess char");
+            gameState = FINISHED;
+        }
         if (gameState == ONGOING) {
             nextTurn();
         }
@@ -127,6 +143,10 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
         vector<string> data = {playerManager.getPlayerUsername(playerIdx), clientKeyword, to_string(keywordGuessResult)};
         sendMessageToAllClient(Message(header, data));
 
+        if (gameController.isEndGame() || playerManager.allPlayerDisqualified()) {
+//            puts("Game finished - Guess keyword");
+            gameState = FINISHED;
+        }
         if (gameState == ONGOING) {
             nextTurn();
         }
@@ -150,10 +170,20 @@ void ServerSocket::clientDisconnectedHandler(int clientIdx) {
     printf("%s has left the game\n", username.c_str());
     playerManager.unregisterPlayer(clientIdx);
 
-    if (currentPlayerIdx == clientIdx) {
-        turnState = 0;
-        currentPlayerIdx = playerManager.getNextPlayerIndex();
-        nextTurn();
+    // Close the socket and mark as 0 in list for reuse
+    close(clientSocket[clientIdx]);
+    clientSocket[clientIdx] = 0;
+
+    if (gameController.isEndGame() || playerManager.allPlayerDisqualified()) {
+        gameState = FINISHED;
+    }
+
+    if (gameState == ONGOING) {
+        if (currentPlayerIdx == clientIdx) {
+            turnState = 0;
+            currentPlayerIdx = playerManager.getNextPlayerIndex();
+            nextTurn();
+        }
     }
 }
 
@@ -240,11 +270,17 @@ void ServerSocket::sendGameResultToAllClient() {
 }
 
 void ServerSocket::nextTurn() {
+//    puts("nextTurn 1");
+
     // Sending current game info for all client to render
     string maskedKeyword = gameController.getMaskedKeyword();
+//    puts("nextTurn 2");
     string playerTurn = playerManager.getPlayerUsername(currentPlayerIdx);
+//    puts("nextTurn 3");
     vector<int> playerScore = gameController.getPlayerScore();
+//    puts("nextTurn 4");
 
+//    puts("nextTurn 5");
     vector<string> gameInfo = {maskedKeyword, playerTurn, to_string(nClient)};
     for(int i = 0; i < nClient; ++i) {
         gameInfo.push_back(playerManager.getPlayerUsername(i));
@@ -252,18 +288,19 @@ void ServerSocket::nextTurn() {
         gameInfo.push_back(to_string(gameController.isDisqualifiedPlayer(i)));
     }
 
+//    puts("nextTurn 6");
     sendMessageToAllClient(Message(HEADER_UPDATE_GAME_INFO, gameInfo));
+//    puts("nextTurn 7");
 
     // Ask current player to guess char or keyword, depend on the turn state
     if (turnState == 0) {
         sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_CHAR_REQUEST));
     }
     else {
-        int isAllowedToGuessKW = gameController.isAllowToGuessKW();
-        if (isAllowedToGuessKW) {
-            sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_KEYWORD_REQUEST));
-        }
+        sendMessageToClient(clientSocket[currentPlayerIdx], Message(HEADER_GUESS_KEYWORD_REQUEST));
     }
+
+//    puts("nextTurn finished");
 }
 
 void ServerSocket::mainLoop() {
@@ -348,9 +385,6 @@ void ServerSocket::mainLoop() {
                     // No content is read -> Client disconnected
                     if (!receiveMessageFromClient(sd, clientMessage)) {
                         clientDisconnectedHandler(i);
-                        // Close the socket and mark as 0 in list for reuse
-                        close(sd);
-                        clientSocket[i] = 0;
                     }
                     else {
                         clientResponseHandler(i, clientMessage);

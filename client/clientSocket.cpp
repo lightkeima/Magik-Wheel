@@ -110,7 +110,7 @@ Message ClientSocket::serverResponseHandler(Message message) {
     }
     else if (message.header == HEADER_GUESS_CHAR_EVENT) {
         string username = message.data[0];
-        char guessChar = message.data[1][1];
+        char guessChar = message.data[1][0];
         int result = stoi(message.data[2]);
 
         string str_result = (result == 1) ? "correct" : (result == 0 ? "incorrect" : "invalid");
@@ -171,7 +171,12 @@ Message ClientSocket::serverResponseHandler(Message message) {
 }
 
 void ClientSocket::serverDisconnectedHandler() {
+    puts("Server has disconnected");
+}
 
+// reset socket
+void ClientSocket::resetSocket(int maxClient) {
+    gameState = NOT_STARTED;
 }
 
 
@@ -237,7 +242,6 @@ void ClientSocket::mainLoop() {
         // Check if it was for closing
         if (!receiveMessageFromServer(serverMessage)) {
             serverDisconnectedHandler();
-            puts("Connection to server closed");
             break;
         }
 

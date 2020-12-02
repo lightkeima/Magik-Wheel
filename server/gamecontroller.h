@@ -10,8 +10,8 @@ using namespace std;
 class GameController
 {
 private:
-    static const int MAX_TURN = 5;
-    static const int START_GUESSING_KW_TURN = 2;
+    int MAX_TURN;
+    int START_GUESSING_KW_TURN;
 
     int numPlayers;
     vector<int> playerScore;
@@ -24,6 +24,7 @@ private:
     vector<bool> masked;
     vector<int> latestCorrectCharGuessPos;
 
+    int consecutiveIncorrectGuess;
     int currentTurn = 0;
     bool kwGuessed = false; // Is keyword guessed correctly?
 
