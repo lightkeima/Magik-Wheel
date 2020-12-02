@@ -60,6 +60,8 @@ private:
     // send message to a client
     bool sendMessageToClient(int clientSocket, Message message);
 
+    bool sendMessageToAllClient(Message client);
+
     // receive message from a client
     bool receiveMessageFromClient(int clientSocket, Message &message);
 
@@ -67,7 +69,7 @@ private:
     Message clientConnectedHandler(int clientIdx);
 
     // handle when a new reponse is received from the server
-    Message clientResponseHandler(int clientIdx, Message message);
+    void clientResponseHandler(int clientIdx, Message message);
 
     // handle when a client disconnected from the server
     void clientDisconnectedHandler(int clientIdx);

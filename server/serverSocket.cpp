@@ -28,6 +28,9 @@ void ServerSocket::startGame() {
         sendMessageToClient(clientSocket[i], Message(HEADER_GAME_START, data));
     }
 
+    string keyword = gameController.getKeyword();
+    printf("Keyword: %s\n", keyword.c_str());
+
     // update game state
     gameState = ONGOING;
 
@@ -37,14 +40,14 @@ void ServerSocket::startGame() {
     nextTurn();
 }
 
-Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
+void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
     cout << "Received message: " << message.str() << endl;
-
-    string header;
-    vector<string> data;
 
     // client register username
     if (message.header == HEADER_UNAME_RESPONSE) {
+        string header;
+        vector<string> data;
+
         if (message.data.size() != 1) { // Bad syntax
             header = HEADER_BAD_MESSAGE;
         }
@@ -63,8 +66,11 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
                 header = HEADER_REGISTER_SUCCESS;
             }
         }
+
+        sendMessageToClient(clientSocket[playerIdx], Message(header, data));
     }
     else if (message.header == HEADER_GUESS_CHAR_RESPONSE) {
+        // Check the guess
         char guessChar = message.data[0][0];
 
         int charGuessResult = gameController.processPlayerAnswer(playerIdx, guessChar);
@@ -76,44 +82,63 @@ Message ServerSocket::clientResponseHandler(int playerIdx, Message message) {
             turnState = 1;
         }
 
-        header = HEADER_GUESS_CHAR_RESULT;
-        data = {to_string(charGuessResult)};
+        // Send result to client
+        string header = HEADER_GUESS_CHAR_RESULT;
+        vector<string> data = {to_string(charGuessResult)};
+        sendMessageToClient(clientSocket[playerIdx], Message(header, data));
+
+        // Notify all clients about the char guess
+        header = HEADER_GUESS_CHAR_EVENT;
+        data = {playerManager.getPlayerUsername(playerIdx), string(1, guessChar), to_string(charGuessResult)};
+        sendMessageToAllClient(Message(header, data));
 
         if (gameState == ONGOING) {
             nextTurn();
         }
     }
     else if (message.header == HEADER_GUESS_KEYWORD_RESPONSE) {
-        string clientKeyword = message.data[0];
-        int keywordGuessResult = gameController.processPlayerAnswer(playerIdx, clientKeyword);
+        string clientKeyword = (message.data.size() > 0) ? message.data[0] : "";
+        int keywordGuessResult = -1;
+        // If the player guessed the keyword...
+        if (clientKeyword != "") {
+            // Check the guess
+            keywordGuessResult = gameController.processPlayerAnswer(playerIdx, clientKeyword);
 
-        if (keywordGuessResult == 0) {
-            playerManager.disqualify(playerIdx);
-            currentPlayerIdx = playerManager.getNextPlayerIndex();
+            if (keywordGuessResult == 0) {
+                playerManager.disqualify(playerIdx);
+                currentPlayerIdx = playerManager.getNextPlayerIndex();
+                turnState = 0;
+            }
+            else if (keywordGuessResult == 1) {
+                gameState = FINISHED;
+            }
+
+            // Send result to client
+            string header = HEADER_GUESS_KEYWORD_RESULT;
+            vector<string> data = {to_string(keywordGuessResult)};
+            sendMessageToClient(clientSocket[playerIdx], Message(header, data));
+        }
+        else {
             turnState = 0;
         }
-        else if (keywordGuessResult == 1) {
-            gameState = FINISHED;
-        }
 
-        header = HEADER_GUESS_KEYWORD_RESULT;
-        data = {to_string(keywordGuessResult)};
+        // Notify all clients about the keyword guess
+        string header = HEADER_GUESS_KEYWORD_EVENT;
+        vector<string> data = {playerManager.getPlayerUsername(playerIdx), clientKeyword, to_string(keywordGuessResult)};
+        sendMessageToAllClient(Message(header, data));
 
         if (gameState == ONGOING) {
             nextTurn();
         }
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
-        puts("Something wrong I can feel it...");
         exit(1);
     }
     else { // Unknown syntax -> Bad syntax
-        header = HEADER_BAD_MESSAGE;
+        string header = HEADER_BAD_MESSAGE;
+        vector<string> data = {message.str()};
+        sendMessageToClient(clientSocket[playerIdx], Message(header, data));
     }
-
-    string maskedKeyword = gameController.getMaskedKeyword();
-
-    return Message(header, data);
 }
 
 Message ServerSocket::clientConnectedHandler(int clientIdx) {
@@ -125,10 +150,11 @@ void ServerSocket::clientDisconnectedHandler(int clientIdx) {
     printf("%s has left the game\n", username.c_str());
     playerManager.unregisterPlayer(clientIdx);
 
-//    if (currentPlayerIdx == clientIdx) {
-//        turnState = 0;
-//        currentPlayerIdx = playerManager.getNextPlayerIndex();
-//    }
+    if (currentPlayerIdx == clientIdx) {
+        turnState = 0;
+        currentPlayerIdx = playerManager.getNextPlayerIndex();
+        nextTurn();
+    }
 }
 
 bool ServerSocket::sendMessageToClient(int clientSocket, Message message) {
@@ -142,6 +168,17 @@ bool ServerSocket::sendMessageToClient(int clientSocket, Message message) {
         return false;
     }
     return true;
+}
+
+bool ServerSocket::sendMessageToAllClient(Message message) {
+    bool result = true;
+    for(int i = 0; i < nClient; ++i) {
+        if (clientSocket[i] != 0) {
+            if (!sendMessageToClient(clientSocket[i], message))
+                result = false;
+        }
+    }
+    return result;
 }
 
 bool ServerSocket::receiveMessageFromClient(int clientSocket, Message &message) {
@@ -199,11 +236,7 @@ void ServerSocket::sendGameResultToAllClient() {
         gameInfo.push_back(to_string(playerScore[i]));
     }
 
-    for(int i = 0; i < nClient; ++i) {
-        if (clientSocket[i] != 0) {
-            sendMessageToClient(clientSocket[i], Message(HEADER_GAME_FINISH, gameInfo));
-        }
-    }
+    sendMessageToAllClient(Message(HEADER_GAME_FINISH, gameInfo));
 }
 
 void ServerSocket::nextTurn() {
@@ -219,11 +252,7 @@ void ServerSocket::nextTurn() {
         gameInfo.push_back(to_string(gameController.isDisqualifiedPlayer(i)));
     }
 
-    for(int i = 0; i < nClient; ++i) {
-        if (clientSocket[i] != 0) {
-            sendMessageToClient(clientSocket[i], Message(HEADER_UPDATE_GAME_INFO, gameInfo));
-        }
-    }
+    sendMessageToAllClient(Message(HEADER_UPDATE_GAME_INFO, gameInfo));
 
     // Ask current player to guess char or keyword, depend on the turn state
     if (turnState == 0) {
@@ -324,8 +353,7 @@ void ServerSocket::mainLoop() {
                         clientSocket[i] = 0;
                     }
                     else {
-                        Message serverMessage = clientResponseHandler(i, clientMessage);
-                        sendMessageToClient(sd, serverMessage);
+                        clientResponseHandler(i, clientMessage);
                     }
                 }
             }

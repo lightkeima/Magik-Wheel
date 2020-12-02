@@ -83,7 +83,7 @@ void PlayerManager::disqualify(int playerIdx) {
 
 int PlayerManager::getNextPlayerIndex() {
     do {
-        ++playerIdx;
+        playerIdx = (playerIdx + 1) % players.size();
     } while (!players[playerIdx].isInGame);
 
     return playerIdx;
