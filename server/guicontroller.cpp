@@ -34,7 +34,7 @@ void GUIController::ShowResultAtPosition(unsigned int position){
     QString qid = QString::fromStdString(id); //convert string to QString
     QObject* characterCard = root->findChild<QObject*>(qid);
     if(characterCard) {
-        characterCard->setProperty("state","front");
+        characterCard->setProperty("flipped",true);
     }
 }
 
@@ -63,6 +63,17 @@ void GUIController::UpdatePlayerScore(unsigned int player_index, unsigned int po
     if(playerInfo) {
         int player_point = QQmlProperty::read(playerInfo, "point").toInt() + point;
         playerInfo->setProperty("point", player_point);
+    }
+}
+
+
+void GUIController::SetPlayerScore(unsigned int player_index, unsigned int point){
+    std::string id = "player";
+    id.push_back('0'+player_index);
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* playerInfo = root->findChild<QObject*>(qid);
+    if(playerInfo) {
+        playerInfo->setProperty("point", point);
     }
 }
 
@@ -150,4 +161,21 @@ void GUIController::FlipCharacter(char character){
         characterCard->setProperty("flipped",true);
     }
 }
-
+int GUIController::GetMaxClient(){
+    std::string id = "maxclient";
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* client = root->findChild<QObject*>(qid);
+    if(client) {
+        return client->property("currentIndex").toInt();
+    }
+    return 2;
+}
+bool GUIController::AcceptClicked(){
+    std::string id = "buttonAccept";
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* accept = root->findChild<QObject*>(qid);
+    if(accept) {
+        return accept->property("accepted").toBool();
+    }
+    return false;
+}

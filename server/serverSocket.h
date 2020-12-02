@@ -10,7 +10,7 @@
 #include <sys/socket.h> 
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
-
+#include "guicontroller.h"
 #include "message.h"
 #include "playerManager.h"
 #include "gamecontroller.h"
@@ -26,6 +26,7 @@ using namespace std;
 
 class ServerSocket {
 private:
+    GUIController * guiController;
     // path of the keyword database
     string dbPath;
 
@@ -80,7 +81,7 @@ private:
     void nextTurn();
 
 public:
-    ServerSocket(int maxClient, string dbPath);
+    ServerSocket(int maxClient, string dbPath, GUIController * guiController);
 
     // set up the server socket
     bool initSocket();

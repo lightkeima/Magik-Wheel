@@ -1,11 +1,12 @@
 #include "serverSocket.h"
 
-ServerSocket::ServerSocket(int maxClient, string dbPath) {	
+ServerSocket::ServerSocket(int maxClient, string dbPath, GUIController * guiController) {
     this->maxClient = maxClient;
     this->dbPath = dbPath;
     this->playerManager = PlayerManager(maxClient);
     this->gameState = NOT_STARTED;
     this->turnState = 0;
+    this->guiController = guiController;
 }
 
 void ServerSocket::startGame() {
@@ -30,12 +31,14 @@ void ServerSocket::startGame() {
 
     string keyword = gameController.getKeyword();
     printf("Keyword: %s\n", keyword.c_str());
+    guiController->SetWord(gameController.getKeyword());
+    guiController->ShowHint(gameController.getHint());
 
     // update game state
     gameState = ONGOING;
 
     this->currentPlayerIdx = playerManager.getNextPlayerIndex();
-
+    guiController->MarkPlayer(this->currentPlayerIdx);
     // Start the first turn
     nextTurn();
 }
@@ -63,6 +66,7 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
             else {
                 printf("Welcome to the game, %s!\n", username.c_str());
                 playerManager.registerPlayer(playerIdx, username);
+                guiController->ChangePlayerName(playerIdx,username);
                 header = HEADER_REGISTER_SUCCESS;
             }
         }
@@ -74,6 +78,7 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
         char guessChar = message.data[0][0];
 
         int charGuessResult = gameController.processPlayerAnswer(playerIdx, guessChar);
+        guiController->FlipCharacter(guessChar);
         if (charGuessResult == 0) {
             currentPlayerIdx = playerManager.getNextPlayerIndex();
             turnState = 0;
@@ -106,6 +111,7 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
 
             if (keywordGuessResult == 0) {
                 playerManager.disqualify(playerIdx);
+                guiController->MarkPlayerDisqualified(playerIdx);
                 currentPlayerIdx = playerManager.getNextPlayerIndex();
                 turnState = 0;
             }
@@ -148,6 +154,7 @@ Message ServerSocket::clientConnectedHandler(int clientIdx) {
 void ServerSocket::clientDisconnectedHandler(int clientIdx) {
     string username = playerManager.getPlayerUsername(clientIdx);
     printf("%s has left the game\n", username.c_str());
+    guiController->MarkPlayerDisqualified(clientIdx);
     playerManager.unregisterPlayer(clientIdx);
 
     if (currentPlayerIdx == clientIdx) {
@@ -243,11 +250,12 @@ void ServerSocket::nextTurn() {
     // Sending current game info for all client to render
     string maskedKeyword = gameController.getMaskedKeyword();
     string playerTurn = playerManager.getPlayerUsername(currentPlayerIdx);
+    guiController->MarkPlayer(this->currentPlayerIdx);
     vector<int> playerScore = gameController.getPlayerScore();
-
     vector<string> gameInfo = {maskedKeyword, playerTurn, to_string(nClient)};
     for(int i = 0; i < nClient; ++i) {
         gameInfo.push_back(playerManager.getPlayerUsername(i));
+        guiController->SetPlayerScore(i,playerScore[i]);
         gameInfo.push_back(to_string(playerScore[i]));
         gameInfo.push_back(to_string(gameController.isDisqualifiedPlayer(i)));
     }
@@ -268,10 +276,11 @@ void ServerSocket::nextTurn() {
 
 void ServerSocket::mainLoop() {
     puts("Waiting for players...");
-
+    maxClient = guiController->GetMaxClient() + 1;
+    guiController->ShowHint("Waiting for players...");
     nClient = maxClient;
+    guiController->CreatePlayerList(maxClient);
     clientSocket.assign(nClient, 0);
-
     while (true) {
         fd_set readfds;
         // clear the socket set
@@ -304,12 +313,14 @@ void ServerSocket::mainLoop() {
             int addrlen, newSocket;
             if ((newSocket = accept(serverSocket, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
                 puts("Failed to accept connection from client");
+                guiController->ShowHint("Failed to accept connection from client");
                 continue;
             }
 
             // If game already started or finished, new player are not accepted
             if (gameState == ONGOING || gameState == FINISHED) {
                 puts("Game already started");
+                guiController->ShowHint("Game already started");
                 sendMessageToClient(newSocket, Message(HEADER_GAME_ALREADY_STARTED));
                 close(newSocket);
             }
@@ -367,6 +378,7 @@ void ServerSocket::mainLoop() {
         }
         else if (gameState == FINISHED) {
             puts("Game finished");
+            guiController->ShowHint("Game finished");
             sendGameResultToAllClient();
             break;
         }

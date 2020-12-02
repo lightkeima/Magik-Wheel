@@ -58,7 +58,7 @@ Flipable {
     id: container
     property alias source: frontImage.source
     property string character: ""
-    property bool flipped: true
+    property bool flipped: false
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0

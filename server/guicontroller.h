@@ -52,6 +52,7 @@ public:
      * @param point: the point that  need to be added
      */
     void UpdatePlayerScore(unsigned int player_index, unsigned int point);
+    void SetPlayerScore(unsigned int player_index, unsigned int point);
     /**
      * @brief Renew all information on the player list
      */
@@ -71,6 +72,10 @@ public:
      * @param character
      */
     void FlipCharacter(char character);
+
+    int GetMaxClient();
+
+    bool AcceptClicked();
 };
 
 #endif // CLIENT_GUICONTROLLER_H

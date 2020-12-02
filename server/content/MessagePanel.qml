@@ -21,13 +21,13 @@ Rectangle {
         text: hint
         fontSizeMode: Text.FixedHeight
         anchors.leftMargin: 10
-        anchors.left: parent.left
+        anchors.left: guessPanel.left
         anchors.rightMargin: 10
-        anchors.right: parent.right
+        anchors.right: guessPanel.right
         anchors.topMargin: 10
-        anchors.top: parent.top
+        anchors.top: guessPanel.top
         anchors.bottomMargin: 10
-        anchors.bottom: parent.bottom
+        anchors.bottom: guessPanel.bottom
         textFormat: Text.RichText
         wrapMode: Text.WordWrap
         horizontalAlignment: Text.AlignHCenter

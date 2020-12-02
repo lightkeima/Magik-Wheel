@@ -23,6 +23,7 @@ Window {
         border.width: 10
         radius: 10
         id: joinmenu
+        property bool ifaccepted: false
         FontLoader {
             id: kenneyFutureNarrow;
             source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
@@ -42,16 +43,28 @@ Window {
                 }
 
                 ComboBox {
+                    objectName: "maxclient"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    currentIndex: 3
+                    currentIndex: 1
                     model: [1,2,3,4,5,6,7,8,9]
                     onCurrentIndexChanged: console.debug(currentIndex)
 
                 }
 
                 Button{
+                    objectName: "buttonAccept"
+                    property bool accepted: false
                     anchors.horizontalCenter: parent.horizontalCenter
                     id: btnaccept
+
+                    onClicked: {
+                        btnaccept.state = "accept"
+                        stack.push(mainView)
+                    }
+                    states: State {
+                            name: "accept"
+                            PropertyChanges { target: btnaccept; accepted: true }
+                           }
                     background: Rectangle {
                         id: bg1
                         implicitWidth: 160
