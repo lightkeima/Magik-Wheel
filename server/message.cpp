@@ -1,5 +1,8 @@
 #include "message.h"
 
+Message::Message() {
+
+}
 
 Message::Message(string header, vector<string> data) {
     this->header = header;

@@ -32,6 +32,8 @@ struct Message {
     string header;
     vector<string> data;
 
+    Message();
+
     Message(string header, vector<string> data);
 
     Message(string buffer);

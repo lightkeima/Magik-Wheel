@@ -14,6 +14,7 @@ SOURCES += \
         guicontroller.cpp \
         main.cpp \
         message.cpp \
+        messagetransceiver.cpp \
         playerManager.cpp \
         serverSocket.cpp
 
@@ -35,6 +36,7 @@ HEADERS += \
     gamecontroller.h \
     guicontroller.h \
     message.h \
+    messagetransceiver.h \
     nlohmann/json.hpp \
     playerManager.h \
     serverSocket.h

@@ -15,6 +15,7 @@
 #include <bits/stdc++.h>
 
 #include "message.h"
+#include "messagetransceiver.h"
 
 enum GameState {
     NOT_STARTED,
@@ -26,28 +27,31 @@ using namespace std;
 
 class ClientSocket {
 private:
-  // client socket descriptor
-  int clientSocket;
+    // client socket descriptor
+    int clientSocket;
 
-  string username;
+    string username;
 
-  GameState gameState;
+    GameState gameState;
 
-  // send message to server
-  bool sendMessageToServer(Message message);
+    // send message to server
+    bool sendMessageToServer(Message message);
 
-  Message serverResponseHandler(Message message);
+    // receive message from server
+    bool receiveMessageFromServer(Message &message);
 
-  void serverDisconnectedHandler();
+    Message serverResponseHandler(Message message);
+
+    void serverDisconnectedHandler();
 
 public:
-  ClientSocket();
+    ClientSocket();
 
-  // set up the client socket
-  bool initSocket();
+    // set up the client socket
+    bool initSocket();
 
-  // executing main loop of the socket
-  void mainLoop();
+    // executing main loop of the socket
+    void mainLoop();
 
 };
 

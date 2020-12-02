@@ -13,7 +13,8 @@ SOURCES += \
         guessbutton.cpp \
         guicontroller.cpp \
         main.cpp \
-        message.cpp
+        message.cpp \
+        messagetransceiver.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +33,5 @@ HEADERS += \
     clientSocket.h \
     guessbutton.h \
     guicontroller.h \
-    message.h
+    message.h \
+    messagetransceiver.h

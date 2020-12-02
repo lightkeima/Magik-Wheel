@@ -9,12 +9,21 @@ bool ClientSocket::sendMessageToServer(Message message) {
     if (message.header == "")
         return true;
     // Otherwise, send the message normally
-    string __message = message.str();
-    const char* buffer = __message.c_str();
-    if (send(clientSocket, buffer, strlen(buffer), 0) != strlen(buffer)) {
-        puts("Failed to send message to client");
+    string content = message.str();
+    if (!MessageTransceiver::send_string(clientSocket, content)) {
+        puts("Failed to send message to server");
         return false;
     }
+    return true;
+}
+
+bool ClientSocket::receiveMessageFromServer(Message &message) {
+    puts("Receiving message");
+    string content;
+    if (!MessageTransceiver::recv_string(clientSocket, content)) {
+        return false;
+    }
+    message = Message(content);
     return true;
 }
 
@@ -185,8 +194,12 @@ void ClientSocket::mainLoop() {
     tv.tv_sec = 1;
     tv.tv_usec = 0;
 
+//    puts("Selecting");
+
     // Waiting for chat from the server
     retval = select(maxfd+1, &rfds, NULL, NULL, &tv);
+
+//    puts("Selected");
 
     if (retval == -1) {
       perror("Select failed");
@@ -196,26 +209,17 @@ void ClientSocket::mainLoop() {
     } else {
       if (FD_ISSET(clientSocket, &rfds)) {
         // Receive message from the server
-        char recvbuf[MAX_BUFFER+1];
-        int len;
-        if ((len = recv(clientSocket, recvbuf, sizeof(recvbuf), 0)) == 0) {
+        Message serverMessage;
+        // Check if it was for closing
+        if (!receiveMessageFromServer(serverMessage)) {
             serverDisconnectedHandler();
             puts("Connection to server closed");
             break;
         }
-        // Set the string terminating NULL byte on the end of the data read
-        recvbuf[len] = 0;
-        Message message = serverResponseHandler(string(recvbuf));
-        sendMessageToServer(message);
-      }
 
-      // User starts writing message
-//      if (FD_ISSET(0, &rfds)) {
-//        char sendbuf[1024];
-//        fgets(sendbuf, sizeof(sendbuf), stdin);
-//        send(clientSocket, sendbuf, strlen(sendbuf), 0);
-//        memset(sendbuf, 0, sizeof(sendbuf));
-//      }          
+        Message clientMesssage = serverResponseHandler(serverMessage);
+        sendMessageToServer(clientMesssage);
+      }   
     }
 
     if (gameState == FINISHED) {

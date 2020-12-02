@@ -14,6 +14,7 @@
 #include "message.h"
 #include "playerManager.h"
 #include "gamecontroller.h"
+#include "messagetransceiver.h"
 
 enum GameState {
     NOT_STARTED,
@@ -58,6 +59,9 @@ private:
 
     // send message to a client
     bool sendMessageToClient(int clientSocket, Message message);
+
+    // receive message from a client
+    bool receiveMessageFromClient(int clientSocket, Message &message);
 
     // handle when a new client connect to the server
     Message clientConnectedHandler(int clientIdx);
