@@ -11,6 +11,8 @@
 #include <thread>
 #include "message.h"
 #include "serverSocket.h"
+#include "fstream"
+#include <QDir>
 
 using namespace std;
 
@@ -111,10 +113,23 @@ void GameLogicTest() {
     }
 }
 
+
 int main(int argc, char *argv[])
 {
-    string dbPath = "/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt";
-    ServerSocket serverSocket(3, dbPath);
+
+    int numberOfClient = 5;
+    std::string path = QDir::currentPath().toUtf8().constData();
+
+    ifstream f;
+    f.open (path + "/config");
+    if(f.is_open()){
+        f >> numberOfClient;
+    }
+    string dbPath = path + "/database.txt";
+    cout << dbPath << endl;
+
+//    string dbPath = "/home/quang/Documents/CS494/Lab01/Magik-Wheel/server/database/database.txt";
+    ServerSocket serverSocket(numberOfClient, dbPath);
     serverSocket.initSocket();
     serverSocket.mainLoop();
 
