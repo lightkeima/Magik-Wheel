@@ -12,12 +12,9 @@ Window {
     height: 720
     visible: true
     title: qsTr("Chiếc nón mlem")
-    Audio {
+    SoundEffect {
            id: buttonClickSound
-           source: "../game resources/audio/UI Sound Pack/MENUASelect.wav"
-           autoLoad: true
-           muted:false
-           volume: 1
+           source: "../game resources/audio/UI Sound Pack/MENUBBack.wav"
        }
     Image {
         anchors.centerIn: parent

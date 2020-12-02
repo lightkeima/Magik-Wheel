@@ -53,10 +53,19 @@ public:
      */
     void UpdatePlayerScore(unsigned int player_index, unsigned int point);
     /**
+     * @brief Renew all information on the player list
+     */
+    void RenewPlayerList();
+
+    /**
      * @brief Hightlight the player
      * @param player_index
      */
     void MarkPlayer(unsigned int player_index);
+    /**
+     * @brief Hightlight a disqualified player
+     */
+    void MarkPlayerDisqualified(unsigned int player_index);
     /**
      * @brief Flip the corresponding character on the guess panel
      * @param character

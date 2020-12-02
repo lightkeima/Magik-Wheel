@@ -7,8 +7,9 @@ Rectangle{
     property string name: "<Undefine>"
     property bool turn: false
     property int point: 100
+    property bool disqualified: false
     objectName: "id"
-    color: turn ? "#eeeeee":  "#eeeeee"
+    color: disqualified ? "#f27255":  "#eeeeee"
     border.color: turn? "#0278ae" : "#a5ecd7"
     border.width: 2
     radius: 10
