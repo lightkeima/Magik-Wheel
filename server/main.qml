@@ -51,9 +51,7 @@ Window {
                     objectName: "maxclient"
                     anchors.horizontalCenter: parent.horizontalCenter
                     currentIndex: 0
-                    model: [0,1,2,3,4,5,6,7,8,9,10]
-                    onCurrentIndexChanged: console.debug(currentIndex)
-
+                    model: ['0','1','2','3','4','5','6','7','8','9','10']
                 }
 
                 Button{
@@ -63,14 +61,11 @@ Window {
                     id: btnaccept
 
                     onClicked: {
+                        btnaccept.accepted=true
                         buttonClickSound.play()
-                        btnaccept.state = "accept"
                         stack.push(mainView)
                     }
-                    states: State {
-                            name: "accept"
-                            PropertyChanges { target: btnaccept; accepted: true }
-                           }
+
                     background: Rectangle {
                         id: bg1
                         implicitWidth: 160

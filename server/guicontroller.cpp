@@ -220,3 +220,14 @@ void GUIController::SetResult(std::string  a, std::string b, std::string c, int 
 
     }
 }
+
+bool GUIController::GetAcceptedState(std::string objectName, std::string propertyName){
+    QString qid = QString::fromStdString(objectName); //convert string to QString
+    QObject* obj = root->findChild<QObject*>(qid);
+    if(obj) {
+        char * prop = &propertyName[0];
+        return obj->property(prop).toBool();
+    }
+    return false;
+}
+

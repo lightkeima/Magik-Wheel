@@ -115,7 +115,6 @@ void ServerSocket::clientResponseHandler(int playerIdx, Message message) {
         sendMessageToAllClient(Message(header, data));
 
         if (gameController.isEndGame() || playerManager.allPlayerDisqualified()) {
-    //            puts("Game finished - Guess char");
                 gameState = FINISHED;
             }
             if (gameState == ONGOING) {
@@ -325,6 +324,7 @@ void ServerSocket::nextTurn() {
 
 void ServerSocket::mainLoop() {
     puts("Waiting for players...");
+
     while(guiController->GetMaxClient()==0);
     maxClient = guiController->GetMaxClient();
     qDebug() << "Max client  now" <<maxClient;

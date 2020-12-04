@@ -75,6 +75,7 @@ public:
 
     int GetMaxClient();
     void SetResult(std::string  a, std::string b, std::string c, int _a, int _b, int _c);
+    bool GetAcceptedState(std::string objectName, std::string propertyName);
     bool AcceptClicked();
 };
 
