@@ -24,6 +24,8 @@ void GUIController::SetWord(std::string word){
         if(characterCard) {
             characterCard->setProperty("character", QString(word[i]));
             characterCard->setProperty("visible", true);
+            characterCard->setProperty("flipped", true);
+
         }
     }
 }
@@ -34,7 +36,7 @@ void GUIController::ShowResultAtPosition(unsigned int position){
     QString qid = QString::fromStdString(id); //convert string to QString
     QObject* characterCard = root->findChild<QObject*>(qid);
     if(characterCard) {
-        characterCard->setProperty("state","front");
+        characterCard->setProperty("flipped",false);
     }
 }
 
@@ -66,6 +68,32 @@ void GUIController::UpdatePlayerScore(unsigned int player_index, unsigned int po
     }
 }
 
+
+void GUIController::SetPlayerScore(unsigned int player_index, unsigned int point){
+    std::string id = "player";
+    id.push_back('0'+player_index);
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* playerInfo = root->findChild<QObject*>(qid);
+    if(playerInfo) {
+        playerInfo->setProperty("point", point);
+    }
+}
+
+
+void GUIController::RenewPlayerList(){
+    for(int i = 0; i < 10; i++){
+        std::string id = "player";
+        id.push_back('0'+i);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* playerInfo = root->findChild<QObject*>(qid);
+        if(playerInfo) {
+            playerInfo->setProperty("turn", false);
+            playerInfo->setProperty("disqualified", false);
+            playerInfo->setProperty("point", 0);
+        }
+    }
+}
+
 void GUIController::MarkPlayer(unsigned int player_index){
     for(int i = 0; i < 10; i++){
         std::string id = "player";
@@ -84,6 +112,26 @@ void GUIController::MarkPlayer(unsigned int player_index){
         playerInfo->setProperty("turn", true);
     }
 }
+
+void GUIController::MarkPlayerDisqualified(unsigned int player_index){
+    for(int i = 0; i < 10; i++){
+        std::string id = "player";
+        id.push_back('0'+i);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* playerInfo = root->findChild<QObject*>(qid);
+        if(playerInfo) {
+            playerInfo->setProperty("turn", false);
+        }
+    }
+    std::string id = "player";
+    id.push_back('0'+player_index);
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* playerInfo = root->findChild<QObject*>(qid);
+    if(playerInfo) {
+        playerInfo->setProperty("disqualified", true);
+    }
+}
+
 
 void GUIController::CreatePlayerList(unsigned int number_of_player){
     for(unsigned int i = 0; i < 10;++i){
@@ -115,4 +163,60 @@ void GUIController::FlipCharacter(char character){
         characterCard->setProperty("flipped",true);
     }
 }
+int GUIController::GetMaxClient(){
+    std::string id = "maxclient";
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* client = root->findChild<QObject*>(qid);
+    if(client) {
+        return client->property("currentIndex").toInt();
+    }
+    return 2;
+}
+bool GUIController::AcceptClicked(){
+    std::string id = "buttonAccept";
+    QString qid = QString::fromStdString(id); //convert string to QString
+    QObject* accept = root->findChild<QObject*>(qid);
+    if(accept) {
+        return accept->property("accepted").toBool();
+    }
+    return false;
+}
 
+void GUIController::SetResult(std::string  a, std::string b, std::string c, int _a, int _b, int _c){
+    QObject* playerInfo = root->findChild<QObject*>("resultlist");
+    if(playerInfo) {
+        playerInfo->setProperty("visible", true);
+
+    }
+    QString qid = QString::fromStdString("top1"); //convert string to QString
+    QObject* playerInfo0 = root->findChild<QObject*>(qid);
+    if(playerInfo) {
+        playerInfo0->setProperty("name", QString::fromStdString(a));
+        playerInfo0->setProperty("point", _a);
+
+    }
+    QString qid1 = QString::fromStdString("top2"); //convert string to QString
+    QObject* playerInfo1 = root->findChild<QObject*>(qid1);
+    if(playerInfo1) {
+        if (b == "No player"){
+            playerInfo1->setProperty("visible", false);
+        }
+        else{
+            playerInfo1->setProperty("name", QString::fromStdString(b));
+            playerInfo1->setProperty("point", _b);
+        }
+
+    }
+    QString qid2 = QString::fromStdString("top3"); //convert string to QString
+    QObject* playerInfo2 = root->findChild<QObject*>(qid2);
+    if(playerInfo2) {
+        if(c=="No player"){
+            playerInfo2->setProperty("visible", false);
+
+        } else {
+            playerInfo2->setProperty("name", QString::fromStdString(c));
+            playerInfo2->setProperty("point", _c);
+        }
+
+    }
+}

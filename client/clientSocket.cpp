@@ -74,35 +74,59 @@ Message ClientSocket::serverResponseHandler(Message message) {
         cin >> guessChar;
 
         header = HEADER_GUESS_CHAR_RESPONSE;
-        data = {to_string(guessChar)};
+        data = {string(1, guessChar)};
     }
     else if (message.header == HEADER_GUESS_CHAR_RESULT) {
         int result = stoi(message.data[0]);
-        if (result == 0) {
+        if (result == 1) {
             printf("Correct! You get another turn.\n");
         }
         else {
             printf("Incorrect! Next player's turn.\n");
         }
-
-//        int score = stoi(message.data[1]);
-//        printf("New score: %d\n", score);
     }
     else if (message.header == HEADER_GUESS_KEYWORD_REQUEST) {
-        string keyword;
-        cout << "Enter the keyword (blank keyword for no guess): ";
-        cin >> keyword;
+        cout << "Do you want to guess the keyword (Y/N)? ";
+        string response;
+        cin >> response;
 
         header = HEADER_GUESS_KEYWORD_RESPONSE;
-        data = {keyword};
+        if (response == "Y") {
+            cout << "Enter the keyword: ";
+            string keyword;
+            cin >> keyword;
+
+            data = {keyword};
+        }
     }
     else if (message.header == HEADER_GUESS_KEYWORD_RESULT) {
         int result = stoi(message.data[0]);
-        if (result == 0) {
+        if (result == 1) {
             printf("Congratulation! Your keyword is correct!\n");
         }
         else {
             printf("Your keyword is incorrect! Better luck next time...\n");
+        }
+    }
+    else if (message.header == HEADER_GUESS_CHAR_EVENT) {
+        string username = message.data[0];
+        char guessChar = message.data[1][0];
+        int result = stoi(message.data[2]);
+
+        string str_result = (result == 1) ? "correct" : (result == 0 ? "incorrect" : "invalid");
+        printf("%s guessed the charater '%c'. It was %s\n", username.c_str(), guessChar, str_result.c_str());
+    }
+    else if (message.header == HEADER_GUESS_KEYWORD_EVENT) {
+        string username = message.data[0];
+        string keyword = message.data[1];
+        int result = stoi(message.data[2]);
+
+        if (keyword == "") {
+            printf("%s did not guess the keyword\n", username.c_str());
+        }
+        else {
+            string str_result = (result == 1) ? "correct" : (result == 0 ? "incorrect" : "invalid");
+            printf("%s guessed the keyword '%s'. It was %s.\n", username.c_str(), keyword.c_str(), str_result.c_str());
         }
     }
     else if (message.header == HEADER_UPDATE_GAME_INFO) {
@@ -120,7 +144,7 @@ Message ClientSocket::serverResponseHandler(Message message) {
             printf("Player: %s - Score: %d - ", username.c_str(), playerScore);
             puts(isDisqualified ? "Disqualified" : "In game");
         }
-    }
+    }    
     else if (message.header == HEADER_GAME_FINISH) {
         gameState = FINISHED;
         puts("Game finished");
@@ -136,41 +160,46 @@ Message ClientSocket::serverResponseHandler(Message message) {
         }
     }
     else if (message.header == HEADER_BAD_MESSAGE) {
-        puts("Something wrong I can feel it...");
         exit(1);
     }
     else { // Unknown syntax -> Bad syntax
         header = HEADER_BAD_MESSAGE;
+        data = {message.str()};
     }
 
     return Message(header, data);
 }
 
 void ClientSocket::serverDisconnectedHandler() {
+    puts("Server has disconnected");
+}
 
+// reset socket
+void ClientSocket::resetSocket(int maxClient) {
+    gameState = NOT_STARTED;
 }
 
 
 bool ClientSocket::initSocket() {
-  if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+  if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
     puts("Socket creation error");
-    return false;
+    return false; 
   }
+  
+  struct sockaddr_in serv_addr; 
+  serv_addr.sin_family = AF_INET; 
+  serv_addr.sin_port = htons(PORT); 
+      
+  // Convert IPv4 and IPv6 addresses from text to binary form 
+  if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) { 
+    puts("Invalid address/ Address not supported"); 
+    return false; 
+  } 
 
-  struct sockaddr_in serv_addr;
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(PORT);
-
-  // Convert IPv4 and IPv6 addresses from text to binary form
-  if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-    puts("Invalid address/ Address not supported");
-    return false;
-  }
-
-  if (connect(clientSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+  if (connect(clientSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) { 
     puts("Connection Failed");
-    return false;
-  }
+    return false; 
+  } 
 
   return true;
 }
@@ -213,13 +242,12 @@ void ClientSocket::mainLoop() {
         // Check if it was for closing
         if (!receiveMessageFromServer(serverMessage)) {
             serverDisconnectedHandler();
-            puts("Connection to server closed");
             break;
         }
 
         Message clientMesssage = serverResponseHandler(serverMessage);
         sendMessageToServer(clientMesssage);
-      }
+      }   
     }
 
     if (gameState == FINISHED) {

@@ -23,18 +23,8 @@ public:
     void CreatePlayerList(unsigned int number_of_player);
     void ChangePlayerName(unsigned int player_index, std::string name);
     void UpdatePlayerScore(unsigned int player_index, unsigned int point);
-    void RenewPlayerList();
     void MarkPlayer(unsigned int player_index);
-    void MarkPlayerDisqualified(unsigned int player_index);
     void FlipCharacter(char character);
-    void ResetCharacterList();
-
-    std::string GetStringFromTextField(QString objectname);
-    void SetGuessButtonVisible(bool visibility);
-    void SetPlayerTurn(bool isturn);
-    bool GetGuessClickedValue(QString objectname);
-    void SetGuessClickedValue(QString objectname);
-
 };
 
 #endif // CLIENT_GUICONTROLLER_H
