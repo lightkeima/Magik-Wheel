@@ -1,7 +1,8 @@
 #include "clientSocket.h"
 
-ClientSocket::ClientSocket() {
+ClientSocket::ClientSocket(GUIController * guiController) {
     gameState = NOT_STARTED;
+    this->guiController = guiController;
 }
 
 bool ClientSocket::sendMessageToServer(Message message) {
@@ -45,8 +46,12 @@ Message ClientSocket::serverResponseHandler(Message message) {
         }
 
         cout << "Enter your username (not exceeding 10 characters, consist of letters, numbers and '_'): ";
-        cin >> username;
+        while(!guiController->GetGuessClickedValue("window")){
 
+            puts("fsadfsdfds");
+        }
+        username = guiController->GetStringFromTextField("playername");
+        guiController->SetGuessClickedValue("window");
         header = HEADER_UNAME_RESPONSE;
         data = {username};
     }
@@ -67,12 +72,17 @@ Message ClientSocket::serverResponseHandler(Message message) {
         printf("Keyword length: %d\n", keywordLength);
         printf("Masked keyword: %s\n", maskedKeyword.c_str());
         printf("Hint: %s\n", hint.c_str());
+        guiController->SetWord(maskedKeyword);
+        guiController->ShowHint(hint);
     }
     else if (message.header == HEADER_GUESS_CHAR_REQUEST) {
         cout << "Enter the character: ";
+        guiController->SetPlayerTurn(true);
         char guessChar;
-        cin >> guessChar;
-
+        //cin >> guessChar;
+        //while(!guiController->GetGuessClickedValue()){
+        //}
+        //guessChar=guessCharacter;
         header = HEADER_GUESS_CHAR_RESPONSE;
         data = {string(1, guessChar)};
     }
@@ -86,17 +96,19 @@ Message ClientSocket::serverResponseHandler(Message message) {
         }
     }
     else if (message.header == HEADER_GUESS_KEYWORD_REQUEST) {
-        cout << "Do you want to guess the keyword (Y/N)? ";
-        string response;
-        cin >> response;
-
+        cout << "Do you want to guess the keyword (Y/N)? ";\
+        guiController->SetGuessButtonVisible(true);
+        string response = "Y";
+        //cin >> response;
         header = HEADER_GUESS_KEYWORD_RESPONSE;
         if (response == "Y") {
             cout << "Enter the keyword: ";
-            string keyword;
-            cin >> keyword;
+ //           while(!guessClicked){
 
+   //         }
+            string keyword = guiController->GetStringFromTextField("guesstf");
             data = {keyword};
+            //guessClicked=false;
         }
     }
     else if (message.header == HEADER_GUESS_KEYWORD_RESULT) {

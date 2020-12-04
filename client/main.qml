@@ -5,7 +5,7 @@ import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.12
 import QtMultimedia 5.15
 import QtQuick.Layouts 1.15
-
+import client.guessbutton 1.0
 import "content"
 Window {
     id: window
@@ -20,6 +20,11 @@ Window {
     Image {
         anchors.centerIn: parent
         source: "../game resources/graphics/7977fbcd22e6155b23421b58340ed2c3.png"
+    }
+    Item{
+        id:temp
+        objectName: "window"
+        property bool guessClicked: false
     }
     Rectangle{
         anchors.centerIn: parent
@@ -83,9 +88,14 @@ Window {
                     font.pixelSize: 20
                 }
                 }
+                GuessButton{
+                    id: guessButton2
+                }
                 Button{
                     id: btnaccept
                     onClicked: {
+                        temp.guessClicked=true
+                        guessButton2.onButtonClick()
                         buttonClickSound.play()
                         stack.push(mainView)
                     }

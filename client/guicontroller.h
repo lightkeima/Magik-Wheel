@@ -30,6 +30,10 @@ public:
     void ResetCharacterList();
 
     std::string GetStringFromTextField(QString objectname);
+    void SetGuessButtonVisible(bool visibility);
+    void SetPlayerTurn(bool isturn);
+    bool GetGuessClickedValue(QString objectname);
+    void SetGuessClickedValue(QString objectname);
 
 };
 

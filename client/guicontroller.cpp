@@ -150,6 +150,8 @@ void GUIController::FlipCharacter(char character){
     }
 }
 
+
+
 void GUIController::ResetCharacterList(){
     for(int i = 0; i < 26;++i){
         char character = 'a' + i;
@@ -164,6 +166,19 @@ void GUIController::ResetCharacterList(){
 
 }
 
+void GUIController::SetPlayerTurn(bool isturn){
+    for(int i = 0; i < 26;++i){
+        char character = 'a' + i;
+        std::string id = "guess ";
+        id.push_back(character);
+        QString qid = QString::fromStdString(id); //convert string to QString
+        QObject* characterCard = root->findChild<QObject*>(qid);
+        if(characterCard) {
+            characterCard->setProperty("playerturn", isturn);
+        }
+    }
+
+}
 
 std::string GUIController::GetStringFromTextField(QString objectname){
     std::string result = "";
@@ -172,4 +187,26 @@ std::string GUIController::GetStringFromTextField(QString objectname){
         result = textField->property("text").toString().toUtf8().constData();
     }
     return result;
+}
+bool GUIController::GetGuessClickedValue(QString objectname){
+    QString result = objectname;
+    QObject* textField = root->findChild<QObject*>(result);
+    if(textField){
+        return textField->property("guessClicked").toBool();
+    }
+    return false;
+}
+void GUIController::SetGuessClickedValue(QString objectname){
+    QString result = objectname;
+    QObject* textField = root->findChild<QObject*>(result);
+    if(textField){
+        textField->setProperty("guessClicked",false);
+    }
+}
+void GUIController::SetGuessButtonVisible(bool visibility){
+    QString objectname = "guess_button";
+    QObject* button = root->findChild<QObject*>(objectname);
+    if(button){
+        button->setProperty("visible", visibility);
+    }
 }

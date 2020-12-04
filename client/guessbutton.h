@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QQuickItem>
 #include <QWidget>
-
+#include "clientSocket.h"
 class GuessButton: public QObject
 {
     Q_OBJECT

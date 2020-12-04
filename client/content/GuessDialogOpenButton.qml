@@ -54,7 +54,7 @@ import client.guessbutton 1.0
 import QtQuick.Layouts 1.15
 import QtGraphicalEffects 1.12
 import QtMultimedia 5.15
-
+import client.guessbutton 1.0
 Button {
     anchors.horizontalCenter: parent.horizontalCenter
     SoundEffect {
@@ -65,6 +65,8 @@ Button {
         id: kenneyFutureNarrow;
         source: "../game resources/fonts/kenney_fontpackage/Fonts/Kenney Future Narrow.ttf" }
     id: container
+    visible: false
+    property bool guessClicked: false
     property string name: "Guess the Keyword"
     objectName: "guess_button"
     background: Rectangle {
@@ -85,7 +87,9 @@ Button {
         color: container.down ? "#faed00" : "#80000000";
         source: bg
     }
-
+    GuessButton{
+        id: guessButton
+    }
     Text {
         id: text
         text: name
@@ -100,8 +104,12 @@ Button {
         font.family: kenneyFutureNarrow.name
     }
     onClicked: {
+        guessClicked = true
         buttonClickSound.play()
         guessdialog.open()
+    }
+    GuessButton{
+        id: guessButton1
     }
     Item{
         Dialog {
@@ -118,6 +126,7 @@ Button {
                     font.family: kenneyFutureNarrow.name
                 }
                 TextField {
+                    objectName: "guesstf"
                     Layout.fillWidth: true
                     placeholderText: qsTr("Enter something")
                     maximumLength: 30
@@ -126,6 +135,7 @@ Button {
                 }
                     Button{
                         id: btnaccept
+                        onClicked: guessButton1.onButtonClick()
                         background: Rectangle {
                                 id: bg1
                                 implicitWidth: 150

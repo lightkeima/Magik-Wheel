@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <sys/shm.h>
 #include <bits/stdc++.h>
-
+#include "guicontroller.h"
 #include "message.h"
 #include "messagetransceiver.h"
 
@@ -27,10 +27,12 @@ using namespace std;
 
 class ClientSocket {
 private:
+
+
     // client socket descriptor
     int clientSocket;
-
     string username;
+    GUIController * guiController;
 
     GameState gameState;
 
@@ -45,7 +47,8 @@ private:
     void serverDisconnectedHandler();
 
 public:
-    ClientSocket();
+
+    ClientSocket(GUIController * guiController);
 
     // set up the client socket
     bool initSocket();

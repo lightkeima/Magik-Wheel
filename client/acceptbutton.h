@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QQuickItem>
 #include <QWidget>
-
+#include "clientSocket.h"
 class AcceptButton: public QObject
 {
     QString objName;
