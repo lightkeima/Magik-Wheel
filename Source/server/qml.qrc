@@ -901,5 +901,24 @@
         <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/avatar (9).png</file>
         <file>content/GuessDialog.qml</file>
         <file>game resources/graphics/7977fbcd22e6155b23421b58340ed2c3.png</file>
+        <file>game resources/audio/UI Sound Pack/ALERTAppear.wav</file>
+        <file>game resources/audio/UI Sound Pack/ALERTDissappear.wav</file>
+        <file>game resources/audio/UI Sound Pack/ALERTError.wav</file>
+        <file>game resources/audio/UI Sound Pack/ETRA.wav</file>
+        <file>game resources/audio/UI Sound Pack/MENUABack.wav</file>
+        <file>game resources/audio/UI Sound Pack/MENUASelect.wav</file>
+        <file>game resources/audio/UI Sound Pack/MENUBBack.wav</file>
+        <file>game resources/audio/UI Sound Pack/MENUBSelect.wav</file>
+        <file>game resources/audio/UI Sound Pack/MESSAGEBAccept.wav</file>
+        <file>game resources/audio/UI Sound Pack/MESSAGEBDecline.wav</file>
+        <file>game resources/audio/UI Sound Pack/Notes.txt</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round (outline)/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Round without details (outline)/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Square/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Square (outline)/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Square without details/Thumbs.db</file>
+        <file>game resources/graphics/kenney_animalpackredux/PNG/Square without details (outline)/Thumbs.db</file>
     </qresource>
 </RCC>

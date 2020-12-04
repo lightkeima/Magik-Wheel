@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.12
+import QtMultimedia 5.15
+
 import "content"
 Window {
     id: window
@@ -14,6 +16,10 @@ Window {
         anchors.fill: parent
         source: "../game resources/graphics/7977fbcd22e6155b23421b58340ed2c3.png"
     }
+    SoundEffect {
+           id: buttonClickSound
+           source: "../game resources/audio/UI Sound Pack/MENUBBack.wav"
+       }
     Rectangle{
         anchors.centerIn: parent
         width: 290
@@ -58,6 +64,7 @@ Window {
                     id: btnaccept
 
                     onClicked: {
+                        buttonClickSound.play()
                         btnaccept.state = "accept"
                         stack.push(mainView)
                     }
@@ -101,7 +108,9 @@ Window {
                     Button{
                         anchors.horizontalCenter: parent.horizontalCenter
                         id: btnext
-                        onClicked: {Qt.callLater(Qt.quit)}
+                        onClicked: {
+                            buttonClickSound.play()
+                            Qt.callLater(Qt.quit)}
                         background: Rectangle {
                             id: bg2
                             implicitWidth: 160

@@ -58,11 +58,11 @@ Flipable {
     id: container
     property alias source: frontImage.source
     property string character: ""
-    property bool flipped: false
+    property bool flipped: true
     property int xAxis: 0
     property int yAxis: 0
     property int angle: 0
-    state: "back"
+    state: "front"
 
     width: front.width; height: front.height
 
@@ -95,7 +95,7 @@ Flipable {
 
     states:
         State {
-            name: "back"; when: container.flipped
+            name: "front"; when: container.flipped
             PropertyChanges { target: rotation; angle: container.angle }
        }
 

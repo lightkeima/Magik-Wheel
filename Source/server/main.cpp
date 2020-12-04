@@ -26,7 +26,7 @@ void init(GUIController * guiController,string dbPath){
 }
 int main(int argc, char *argv[])
 {
-    std::string path = QDir::currentPath().toUtf8().data();
+    std::string path = QDir::currentPath().toUtf8().constData();
 
     ifstream f;
     f.open (path + "/config");
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         f >> numberOfClient;
     }
 
-    string dbPath = path + "database.txt";
+    string dbPath = "/home/lightkeima/GUI_MG/Magik-Wheel/server_release/database.txt";
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

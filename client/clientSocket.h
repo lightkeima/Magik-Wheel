@@ -32,7 +32,6 @@ private:
     // client socket descriptor
     int clientSocket;
     string username;
-    GUIController * guiController;
 
     GameState gameState;
 
@@ -48,7 +47,7 @@ private:
 
 public:
 
-    ClientSocket(GUIController * guiController);
+    ClientSocket();
 
     // set up the client socket
     bool initSocket();
